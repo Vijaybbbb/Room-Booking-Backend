@@ -45,8 +45,11 @@ const hotelSchema = new mongoose.Schema({
        featured:{
               type:Boolean,
               default:false
-       },
-})
+       },    
+       
+},
+{timestamps:true}
+)
 
 const Hotels  = mongoose.model('hotel',hotelSchema)
 

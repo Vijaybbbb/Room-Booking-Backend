@@ -32,6 +32,17 @@ app.use('/rooms',roomsRouter)
 
 
 
+app.use((err,req,res,next)=>{
+       const errorStatus  = err.status || 500
+       const errorMessage  = err.Message || 'Something Went Wrong'
+
+       return res.status(errorStatus).json({
+              success:false,
+              status:errorMessage,
+              message:errorMessage
+       })
+})
+
 app.get('/',(req,res)=>{
        res.send('welcome');
 }).listen(3000)

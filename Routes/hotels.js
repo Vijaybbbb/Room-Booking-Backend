@@ -9,7 +9,7 @@ router.post('/',async(req,res)=>{
             await Hotels.create(newHotel)  
             res.status(200)
        } catch (error) {
-              res.status(500).json(error)
+              next(error)
        }
 })
 
@@ -22,7 +22,7 @@ router.put('/:id',async(req,res)=>{
             await Hotels.create(newHotel)  
             res.status(200)
        } catch (error) {
-              res.status(500).json(error)
+              next(error)
        }
 })
 
