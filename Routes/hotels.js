@@ -1,30 +1,15 @@
 const express = require('express')
 const router = express.Router()
-const Hotels = require('../Model/hotel.js')
+
+const {createHotel,
+       updatedHotel}  = require('../Controller/hotels.js')
+
 
 //create hotel
-router.post('/',async(req,res)=>{
-       const newHotel  = req.body
-       try {
-            await Hotels.create(newHotel)  
-            res.status(200)
-       } catch (error) {
-              next(error)
-       }
-})
-
+router.post('/',createHotel)
 
 //update hotel
-
-router.put('/:id',async(req,res)=>{
-       const updatedHotel = await  Hotels.findByIdAndUpdate(req.params.id,{$set : req.body})
-       try {
-            await Hotels.create(newHotel)  
-            res.status(200)
-       } catch (error) {
-              next(error)
-       }
-})
+router.put('/:id',updatedHotel)
 
 
 
