@@ -8,6 +8,7 @@ const userRouter  = require('./Routes/users.js')
 const adminRouter  = require('./Routes/admin.js')
 const hotelsRouter  = require('./Routes/hotels.js')
 const roomsRouter  = require('./Routes/rooms.js')
+const cookieParser = require('cookie-parser')
 
 
 //mongoDB connection function
@@ -21,7 +22,7 @@ const roomsRouter  = require('./Routes/rooms.js')
 
 //middlewares 
 app.use(express.json())
-
+app.use(cookieParser())
 
 //Routes middlewares
 app.use('/auth',authRouter)
