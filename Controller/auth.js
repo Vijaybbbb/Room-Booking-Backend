@@ -7,18 +7,27 @@ const jwt  = require('jsonwebtoken')
 const register = async(req,res,next) =>{
 
        try {
-            const {userName,email,password} = req.body
-            const hashedPassword =await bcrypt.hash(password , 10 )
-            const newUser = {
-              userName:userName,
-              email:email,
-              password:hashedPassword
-            }
-            await User.create(newUser)
-            res.status(200).send('User Hasbeen created')
+              const { username, email, password } = req.body
+              console.log(req.body);
+              const hashedPassword = await bcrypt.hash(password, 10)
+              const newUser = {
+                     userName: username,
+                     email: email,
+                     password: hashedPassword
+              }
+              await User.create(newUser)
+              res.status(200).json({ message: 'User Hasbeen created' })
 
        } catch (error) {
-              
+             
+              if (error.name == 'MongoServerError') {
+
+                     res.status(422).json({ message: 'Mail Already Exists' });
+                 } else {
+                     // Handle other errors
+                     console.error(error);
+                     res.status(500).json({ message: 'Internal Server Error' });
+                 }
        }
 }
 const login = async(req,res,next) =>{

@@ -9,8 +9,8 @@ const adminRouter  = require('./Routes/admin.js')
 const hotelsRouter  = require('./Routes/hotels.js')
 const roomsRouter  = require('./Routes/rooms.js')
 const cookieParser = require('cookie-parser')
-
-
+const bodyParser = require('body-parser');
+const cors = require('cors')
 //mongoDB connection function
  try {
        mongoose.connect(process.env.MONGO)
@@ -23,7 +23,9 @@ const cookieParser = require('cookie-parser')
 //middlewares 
 app.use(express.json())
 app.use(cookieParser())
-
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(cors({ origin: 'http://localhost:5173' }))
 //Routes middlewares
 app.use('/auth',authRouter)
 app.use('/user',userRouter)
