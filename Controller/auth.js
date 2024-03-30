@@ -1,14 +1,28 @@
 const User = require('../Model/user.js')
 const bcrypt = require('bcrypt')
 const jwt  = require('jsonwebtoken')
-
+const {generateOtp,
+       sendOtpToEmail,
+}  = require('../utils/userOtp.js')
 
 
 const register = async(req,res,next) =>{
 
        try {
               const { username, email, password } = req.body
-              console.log(req.body);
+              const findExistingUser = User.findOne({email})
+              if(findExistingUser){
+                     return res.status(422).json({message : 'Mail Already Exists'})
+              }
+              //generate random otp
+              const otp  = generateOtp().toString()
+
+              //hash otp
+              const hashedOtp = await bcrypt.hash(otp,5)
+
+              //send otp
+              await sendOtpToEmail(email,hashedOtp)
+
               const hashedPassword = await bcrypt.hash(password, 10)
               const newUser = {
                      userName: username,
