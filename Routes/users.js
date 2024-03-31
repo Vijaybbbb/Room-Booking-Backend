@@ -12,4 +12,10 @@ router.get('/checkAuthentication',verifyTocken,(req,res)=>{
 })
 
 
+router.get('/otpVerify',(req,res)=>{
+       const email = req.query.email;
+       
+})
+
+
 module.exports  = router

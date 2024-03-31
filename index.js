@@ -11,6 +11,8 @@ const roomsRouter  = require('./Routes/rooms.js')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser');
 const cors = require('cors')
+const session = require('express-session')
+
 //mongoDB connection function
  try {
        mongoose.connect(process.env.MONGO)
@@ -33,7 +35,11 @@ app.use('/admin',adminRouter)
 app.use('/hotels',hotelsRouter)
 app.use('/rooms',roomsRouter)
 
-
+app.use(session({
+       secret: 'your-secret-key',
+       resave: false,
+       saveUninitialized: true,
+     }));
 
 app.use((err,req,res,next)=>{
        const errorStatus  = err.status || 500
