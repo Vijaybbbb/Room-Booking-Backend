@@ -42,15 +42,7 @@ const register = async(req,res,next) =>{
               });
               res.redirect(`/user/otpVerify?email=${email}`)
 
-              const hashedPassword = await bcrypt.hash(password, 10)
-              const newUser = {
-                     userName: username,
-                     email: email,
-                     password: hashedPassword
-              }
-              await User.create(newUser)
-              res.status(200).json({ message: 'User Hasbeen created' })
-
+              
        } catch (error) {
              
               if (error.name == 'MongoServerError') {
