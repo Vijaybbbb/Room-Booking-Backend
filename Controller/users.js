@@ -1,4 +1,4 @@
- const otpVerify = async() =>{
+ const otpVerify = async(req,res,next) =>{
        const email = req.query.email;
 
        const hashedPassword = await bcrypt.hash(password, 10)
