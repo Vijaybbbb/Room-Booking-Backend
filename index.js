@@ -15,12 +15,6 @@ const {connect}  = require('./utils/DatabaseConnect.js')
 connect()
 
 
-app.use(session({
-       secret: 'your-secret-key',
-       resave: false,
-       saveUninitialized: true,
-}))
-
 
 //middlewares 
 app.use(express.json())

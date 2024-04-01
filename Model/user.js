@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
               type:Boolean,
               default:false
        },
-       otpVerify:{
+       otpVerified:{
               type:Boolean,
               default:false
        }

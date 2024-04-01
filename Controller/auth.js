@@ -11,10 +11,12 @@ const {generateOtp,
 const register =  async (req, res, next) => {
        try {
            const { username, email, password } = req.body;
+
            const findExistingUser = await User.findOne({ email });
            if (findExistingUser) {
                return res.status(422).json({ message: 'User Already Exists' });
            }
+           
            // delete existing otp
            await Otp.deleteMany({ email });
            // generate random otp
@@ -24,7 +26,6 @@ const register =  async (req, res, next) => {
            // send otp
            await sendOtpToEmail(email, otp);
      
-           console.log(req.session);
            const expireAt = Date.now() + 60 * 1000; // expire within 60 seconds
            await Otp.create({
                email: email,
@@ -34,12 +35,16 @@ const register =  async (req, res, next) => {
            });
    
            const hashedPassword = await bcrypt.hash(password,10)   
-           const newUser = {
-                  userName: username,
-                  email: email,
-                  password: hashedPassword
-           }
-           await User.create(newUser)
+       //     const newUser = {
+       //            userName: username,
+       //            email: email,
+       //            password: hashedPassword
+       //     }
+       //     await User.create(newUser)
+    
+           res.status(200).json({ message: 'User registered successfully' });
+
+           return password
 
        } catch (error) {
            if (error.name == 'MongoServerError') {
@@ -84,6 +89,11 @@ const login = async(req,res,next) =>{
 
  
  const otpVerify = async(req,res,next) =>{
+
+       const pass=register()
+
+       console.log("wwwwwwwwwwww",pass);
+
        const {email,userOtp} = req.body;
       if(!userOtp){
             return res.json({message:"No otp Found"})
@@ -97,11 +107,14 @@ const login = async(req,res,next) =>{
      const now=new Date();
        //checks otp expired
       if(now > generatedOtp[0].expireAt){
+   
+
             return res.json({message:'OTP  has expired'})
        }
       const isOtpValid =  bcrypt.compare(userOtp,generatedOtp[0].otp)
+      console.log(isOtpValid);
       if(isOtpValid){
-              return res.json({message:'Login Successfull'})
+             return await Otp.updateOne({ email },{$set:{otpVerified:true}});  
       }
       
  }
