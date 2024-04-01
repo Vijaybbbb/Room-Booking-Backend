@@ -14,6 +14,14 @@ const session = require('express-session')
 const {connect}  = require('./utils/DatabaseConnect.js')
 connect()
 
+
+app.use(session({
+       secret: 'your-secret-key',
+       resave: false,
+       saveUninitialized: true,
+     }));
+
+
 //middlewares 
 app.use(express.json())
 app.use(cookieParser())
@@ -28,11 +36,6 @@ app.use('/admin',adminRouter)
 app.use('/hotels',hotelsRouter)
 app.use('/rooms',roomsRouter)
 
-app.use(session({
-       secret: 'your-secret-key',
-       resave: false,
-       saveUninitialized: true,
-     }));
 
 app.use((err,req,res,next)=>{
        const errorStatus  = err.status || 500

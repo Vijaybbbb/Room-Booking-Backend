@@ -10,7 +10,7 @@ const generateOtp = () =>{
 const transport = nodeMailer.createTransport({
        service: "gmail",
        auth: {
-         user: 'databaseconnection111@gmail.com', 
+         user: 'blogify6@gmail.com', 
          pass: "qxpu eghk aemc tzmo",
        },
        secure: true, // Use TLS
@@ -23,7 +23,7 @@ const transport = nodeMailer.createTransport({
  const sendOtpToEmail = (email,otp) =>{
        return new Promise((resolve,reject)=>{
               const mailOptions = {
-                     from: 'databaseconnection111@gmail.com',
+                     from: 'blogify6@gmail.com',
                      to: email,
                      subject: "OTP VERIFICATION",
                      text: `verify your email to signup ... YOUR OTP IS : ${otp}`
@@ -32,7 +32,7 @@ const transport = nodeMailer.createTransport({
                      if (err) {
                             reject(new Error("Failed to send OTP"));
                       } else {
-                             console.log("OTP Sent successfully");
+                             console.log("OTP Sent successfully",otp);
                              resolve("OTP Sent successfully");
                       }
                });

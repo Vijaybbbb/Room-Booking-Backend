@@ -7,52 +7,50 @@ const {generateOtp,
 }  = require('../utils/userOtp.js')
 
 
-const register = async(req,res,next) =>{
-
+const register = async (req, res, next) => {
        try {
-              const { username, email, password } = req.body
-
-              req.session.username = username;
-              req.session.email = email;
-              req.session.password = password;
-
-              const findExistingUser = User.findOne({email})
-              if(findExistingUser){
-                     return res.status(422).json({message : 'Mail Already Exists'})
-              }
-              //generate random otp
-              const otp  = generateOtp().toString()
-
-              //hash otp
-              const hashedOtp = await bcrypt.hash(otp,5)
-
-              //send otp
-              await sendOtpToEmail(email,hashedOtp)
-
-              //delete existing otp
-              await Otp.deleteMany({email})
-
-
-              const expireAt = Date.now() + 60 * 1000; // expire within 60 seconds 
-              await Otp.create({
-              email: email,
-              otp: hashedOtp,
-              createdAt: Date.now(),
+           const { username, email, password } = req.body;
+       
+           req.session.email = email;
+           req.session.username = username;
+           req.session.password = password
+           console.log(req.session.password );
+           const findExistingUser = await User.findOne({ email });
+           if (findExistingUser) {
+               return res.status(422).json({ message: 'User Already Exists' });
+           }
+           // delete existing otp
+           await Otp.deleteMany({ email });
+   
+           // generate random otp
+           const otp = generateOtp().toString();
+   
+           // hash otp
+           const hashedOtp = await bcrypt.hash(otp, 5);
+   
+           // send otp
+           await sendOtpToEmail(email, otp);
+     
+   
+           const expireAt = Date.now() + 60 * 1000; // expire within 60 seconds
+           await Otp.create({
+               email: email,
+               otp: hashedOtp,
+               createdAt: Date.now(),
                expireAt,
-              });
-              
+           });
+   
+           res.status(200).json({ message: 'User registered successfully' });
        } catch (error) {
-             
-              if (error.name == 'MongoServerError') {
-                     res.status(422).json({ message: 'Internal Server Error' });
-                 } else {
-                     // Handle other errors
-                     console.error(error);
-                     res.status(500).json({ message: 'Internal Server Error' });
-                 }
+           if (error.name == 'MongoServerError') {
+               res.status(422).json({ message: 'Internal Server Error' });
+           } else {
+               console.error(error);
+               res.status(500).json({ message: 'Internal Server Error' });
+           }
        }
-}
-
+   };
+   
 
 const login = async(req,res,next) =>{
 
