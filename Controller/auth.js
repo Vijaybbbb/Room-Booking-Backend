@@ -40,14 +40,11 @@ const register = async(req,res,next) =>{
               createdAt: Date.now(),
                expireAt,
               });
-              res.redirect(`/user/otpVerify?email=${email}`)
-
               
        } catch (error) {
              
               if (error.name == 'MongoServerError') {
-
-                     res.status(422).json({ message: 'Mail Already Exists' });
+                     res.status(422).json({ message: 'Internal Server Error' });
                  } else {
                      // Handle other errors
                      console.error(error);
@@ -55,6 +52,8 @@ const register = async(req,res,next) =>{
                  }
        }
 }
+
+
 const login = async(req,res,next) =>{
 
        try {

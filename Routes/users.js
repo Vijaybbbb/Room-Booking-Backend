@@ -4,11 +4,11 @@ const {verifyTocken}  = require('../utils/verifyTocken.js')
 const {otpVerify} = require('../Controller/users.js')
 
 
-router.get('/checkAuthentication',verifyTocken,(req,res)=>{
+router.post('/checkAuthentication',verifyTocken,(req,res)=>{
        res.send('users')
 })
 
-router.get('/otpVerify',otpVerify)
+router.post('/otpVerify',otpVerify)
 
 
 module.exports  = router
