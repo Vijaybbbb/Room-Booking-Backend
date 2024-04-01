@@ -34,7 +34,7 @@ const register =  async (req, res, next) => {
                expireAt,
            });
    
-           const hashedPassword = await bcrypt.hash(password,10)   
+       //    const hashedPassword = await bcrypt.hash(password,10)   
        //     const newUser = {
        //            userName: username,
        //            email: email,
@@ -44,7 +44,7 @@ const register =  async (req, res, next) => {
     
            res.status(200).json({ message: 'User registered successfully' });
 
-           return password
+        
 
        } catch (error) {
            if (error.name == 'MongoServerError') {
@@ -89,10 +89,6 @@ const login = async(req,res,next) =>{
 
  
  const otpVerify = async(req,res,next) =>{
-
-       const pass=register()
-
-       console.log("wwwwwwwwwwww",pass);
 
        const {email,userOtp} = req.body;
       if(!userOtp){
