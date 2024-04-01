@@ -18,7 +18,7 @@ const register =  async (req, res, next) => {
            }
            
            // delete existing otp
-           await Otp.deleteMany({ email });
+           await Otp.deleteMany({});
            // generate random otp
            const otp = generateOtp().toString();
            // hash otp
@@ -34,25 +34,25 @@ const register =  async (req, res, next) => {
                expireAt,
            });
    
-       //    const hashedPassword = await bcrypt.hash(password,10)   
-       //     const newUser = {
-       //            userName: username,
-       //            email: email,
-       //            password: hashedPassword
-       //     }
-       //     await User.create(newUser)
-    
+          const hashedPassword = await bcrypt.hash(password,10)   
+          const newUser = {
+            username: username, 
+            email: email,
+            password: hashedPassword,
+        };
+        
+          
+           await User.create(newUser)
            res.status(200).json({ message: 'User registered successfully' });
 
-        
-
        } catch (error) {
-           if (error.name == 'MongoServerError') {
-               res.status(422).json({ message: 'Internal Server Error' });
-           } else {
-               console.error(error);
-               res.status(500).json({ message: 'Internal Server Error' });
-           }
+        //    if (error.name == 'MongoServerError') {
+        //        res.status(422).json({ message: 'Internal Server Error' });
+        //    } else {
+        //        console.error(error);
+        //        res.status(500).json({ message: 'Internal Server Error' });
+        //    }
+        console.log(error);
        }
    };
    

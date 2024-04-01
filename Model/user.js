@@ -2,10 +2,9 @@ const mongoose  = require('mongoose')
 
 
 const userSchema = new mongoose.Schema({
-       userName:{
+       username:{
               type:String,
               required:true,
-              unique:true
        },
        email:{
               type:String,
@@ -22,13 +21,13 @@ const userSchema = new mongoose.Schema({
        },
        otpVerified:{
               type:Boolean,
-              default:false
+              default:false 
        }
 
        
 },
 {timestamps:true}
-)
+) 
 
 const User  = mongoose.model('user',userSchema)
 
