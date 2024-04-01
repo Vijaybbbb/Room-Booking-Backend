@@ -19,7 +19,12 @@ const userSchema = new mongoose.Schema({
        isAdmin:{
               type:Boolean,
               default:false
+       },
+       otpVerify:{
+              type:Boolean,
+              default:false
        }
+
        
 },
 {timestamps:true}
