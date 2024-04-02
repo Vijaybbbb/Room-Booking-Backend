@@ -14,14 +14,22 @@ const session = require('express-session')
 const {connect}  = require('./utils/DatabaseConnect.js')
 connect();
 
-
+app.use(session({
+       secret: 'your-secret-key', // Change this to a random secret key
+       resave: false,
+       saveUninitialized: false
+   }));
+   
 
 //middlewares 
 app.use(express.json())
 app.use(cookieParser())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors({ origin: 'http://localhost:5173' }))
+app.use(cors({
+        origin: 'http://localhost:5173',
+        credentials: true 
+        }))
 
 //Routes middlewares
 app.use('/auth',authRouter)
