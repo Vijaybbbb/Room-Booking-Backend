@@ -61,7 +61,11 @@ const login = async(req,res,next) =>{
               if(checkPassword){
                      const tocken  = jwt.sign({id:user._id,isAdmin:user.isAdmin},process.env.JWT_SECRET_KEY)
                      const {password,isAdmin,...otherDetails} = user._doc
-                     res.cookie('access_tocken',tocken,{httpOnly:true}).status(200).json({...otherDetails});
+                     res.cookie('access_tocken',tocken,{
+                            httpOnly:true,
+                            path:'/'
+                            }
+                            ).status(200).json({...otherDetails});
 
               }
               else{
