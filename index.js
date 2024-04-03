@@ -12,6 +12,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors')
 const session = require('express-session')
 const {connect}  = require('./utils/DatabaseConnect.js')
+const { verifyTocken } = require('./utils/verifyTocken.js')
 connect();
 
 app.use(session({
@@ -51,6 +52,6 @@ app.use((err,req,res,next)=>{
        })
 })
 
-app.get('/',(req,res)=>{
-       res.send('welcome');
+app.get('/',verifyTocken,(req,res)=>{
+      res.status(200).json({message:'success'})
 }).listen(3000)
