@@ -29,7 +29,7 @@ const register =  async (req, res, next) => {
               await Otp.deleteMany({email});
               // generate random otp
               const otp = generateOtp().toString();
-              // hash otp
+              // hash otp           
               const hashedOtp = await bcrypt.hash(otp, 5);
               // send otp
               await sendOtpToEmail(email, otp);

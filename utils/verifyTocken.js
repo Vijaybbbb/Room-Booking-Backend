@@ -3,8 +3,8 @@ const {createError}  = require('../utils/error.js')
 
 const verifyTocken = async(req,res,next) =>{
        //take value from cookie
-       const tocken = req.cookies.access_tocken;
-       console.log(tocken);
+       const tocken = await req.cookies.access_tocken;
+       const userId = req.query.userId
        if(!tocken){
               return next(createError(401,'Invalid Creadentials'))
        }
@@ -12,8 +12,14 @@ const verifyTocken = async(req,res,next) =>{
               if(err){
                      return next(createError(401,'Invalid Tocken'))     
               }
-              next();
-})
+              if(userId === user.id){
+                     next()
+              }else{
+                     return next(createError(401,'Authentication failed'))
+              }
+
+             
+       })
 
 }
 
