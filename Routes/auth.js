@@ -8,8 +8,7 @@ const {register,
        newPasswordSet
         } = require('../Controller/auth.js')
 
-const {verifyTocken}  = require('../utils/verifyTocken.js')
-const { session } = require('../utils/session.js')
+
 
 //register User             
  router.post('/register', register)

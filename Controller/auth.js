@@ -5,14 +5,12 @@ const jwt  = require('jsonwebtoken')
 const {generateOtp,
        sendOtpToEmail,
 }  = require('../utils/userOtp.js')
-const Hotels = require('../Model/hotel.js')
 const { createError } = require('../utils/error.js')
 
-
+//user registration
 const register =  async (req, res, next) => {
        try {
            const { username, email, password } = req.body;
-              req.session.password = password
            const findExistingUser = await User.findOne({ email });
            if (findExistingUser) {
                return next(createError(401,'User Already Exists'))
@@ -48,13 +46,16 @@ const register =  async (req, res, next) => {
        }
    };
    
-
+//user login
 const login = async(req,res,next) =>{
 
        try {
             const {email,password} = req.body
             const user = await User.findOne({email:email})
-            if(user){
+            if(!user){
+                     return next(createError(401,'User Not Found'))
+            }
+            else{
               const checkPassword = await bcrypt.compare(password,user.password)
               if(checkPassword){
                      const tocken  = jwt.sign({id:user._id,isAdmin:user.isAdmin},process.env.JWT_SECRET_KEY)
@@ -64,22 +65,18 @@ const login = async(req,res,next) =>{
                             path:'/'
                             }
                             ).status(200).json({...otherDetails});
-
               }
               else{
-                     res.status(400).json('Password Do not Match')
+                     return next(createError(401,'Invalid Credentials'))
               }
             }
-            else{
-                      res.status(401).json('User Not Found')
-            }
-
        } catch (error) {
-              console.log(error);
+                      return next(createError(401,'Login Failed'))
+             
        }
 }
 
- 
+ //take otp from user and verify
  const otpVerify = async(req,res,next) =>{
        try {
               const { email, userOtp } = req.body;
@@ -117,7 +114,7 @@ const login = async(req,res,next) =>{
        }
  }
 
- 
+ //resend the otp
 const otpResend = async(req,res,next) =>{
        const {email} = req.body
        // delete existing otp
@@ -140,7 +137,7 @@ const otpResend = async(req,res,next) =>{
 }
 
 
-
+//reset the password
 const passwordReset = async(req,res,next) =>{
       try {
        const {email} = req.body
@@ -169,7 +166,7 @@ const passwordReset = async(req,res,next) =>{
       }       
 }
 
-
+//create new password
 const newPasswordSet = async(req,res,next) =>{
        try {
               const { newPassword,confirmnNewPassword,email} = req.body
