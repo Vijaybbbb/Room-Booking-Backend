@@ -4,8 +4,7 @@ const {register,
        login,
        otpVerify,
        otpResend,
-       hotelData
-       
+       passwordReset
         } = require('../Controller/auth.js')
 
 const {verifyTocken}  = require('../utils/verifyTocken.js')
@@ -24,8 +23,9 @@ router.post('/otpVerify', otpVerify)
 //otp resend
 router.post('/otpResend', otpResend)
 
+//password reset
+router.post('/passwordReset',passwordReset)
 
-router.get("/getdata",verifyTocken, hotelData)
 
 
 

@@ -10,7 +10,6 @@ const connect =async () =>{
 } catch (error) {
        console.log('Connection Failed');
  }
-
 }
 
 module.exports = {

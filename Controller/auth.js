@@ -133,14 +133,39 @@ const otpResend = async(req,res,next) =>{
 }
 
 
-const hotelData=async(req,res)=>{
-       try{
-const datas=await Hotels.find()
-return res.status(200).json(datas)
-       }catch(err){
 
-       }
+const passwordReset = async(req,res,next) =>{
+      try {
+       const {email} = req.body
+
+       // delete existing otp
+       await Otp.deleteMany({email});
+       // generate random otp
+       const otp = generateOtp().toString();
+       // hash otp           
+       const hashedOtp = await bcrypt.hash(otp, 5);
+       // send otp
+       await sendOtpToEmail(email, otp);
+       
+       const expireAt = Date.now() + 120 * 1000; // expire within 60 seconds
+       await Otp.create({
+           email: email,
+           otp: hashedOtp,
+           createdAt: Date.now(),
+           expireAt,
+       });
+
+       return res.status(200).json({message:"Otp send Suuccesfully"})
+
+      } catch (error) {
+              console.log(error);
+      }
+       
 }
+
+
+
+
 
 
 module.exports = {
@@ -148,5 +173,6 @@ module.exports = {
        login,
        otpVerify,
        otpResend,
-       hotelData
+       passwordReset
+       
 }
