@@ -15,7 +15,7 @@ const register =  async (req, res, next) => {
               req.session.password = password
            const findExistingUser = await User.findOne({ email });
            if (findExistingUser) {
-               return res.status(422).json({ message: 'User Already Exists' });
+               return next(createError(401,'User Already Exists'))
            }
 
           const hashedPassword = await bcrypt.hash(password,10)   
@@ -44,7 +44,7 @@ const register =  async (req, res, next) => {
            res.status(200).json({ message: 'User registered successfully' });
 
        } catch (error) {
-              next(createError())
+              next(createError(401,"User registration failed"))
        }
    };
    
@@ -81,28 +81,40 @@ const login = async(req,res,next) =>{
 
  
  const otpVerify = async(req,res,next) =>{
+       try {
+              const { email, userOtp } = req.body;
+            const user = await User.findOne({email:email})
 
-       const {email,userOtp} = req.body;
-
-      if(!userOtp){
-            return res.json({message:"No otp Found"})
-      }
-      const generatedOtp = await Otp.find({email})
-      if(generatedOtp.length == 0 ){
-            return res.json({message:'OTP not found or has expired'})       
-     }
-
-     const now=new Date();
-       //checks otp expired
-      if(now > generatedOtp[0].expireAt){
-            return res.json({message:'OTP  has expired'})
-       }
-      const isOtpValid = await bcrypt.compare(userOtp,generatedOtp[0].otp)
-      if(isOtpValid){
-              await User.updateOne({ email },{$set:{otpVerified:true}});
-              return res.status(200).json({message:'Login success'})
-      }
+              if (!userOtp) {
+                     return next(createError(401,'No OTP Found'))
+              }
+              const generatedOtp = await Otp.find({ email })
+              if (generatedOtp.length == 0) {
+                     return next(createError(401,'OTP not found or has expired'))
+              }
       
+              const now = new Date();
+              //checks otp expired
+              if (now > generatedOtp[0].expireAt) {
+                     return next(createError(401,'OTP has expired'))
+              }
+              const isOtpValid = await bcrypt.compare(userOtp, generatedOtp[0].otp)
+              if (isOtpValid) {
+                     await User.updateOne({ email }, { $set: { otpVerified: true } });
+                     const tocken  = jwt.sign({id:user._id,isAdmin:user.isAdmin},process.env.JWT_SECRET_KEY)
+                     const {password,isAdmin,...otherDetails} = user._doc
+                     res.cookie('access_tocken',tocken,{
+                            httpOnly:true,
+                            path:'/'
+                            }
+                            ).status(200).json({ message: 'Login success',...otherDetails});
+                    
+              }else{
+                     return next(createError(401,'Incorrect OTP'))
+              }
+       } catch (error) {
+              next(createError(401,'OTP Authentication Failed'))
+       }
  }
 
  
