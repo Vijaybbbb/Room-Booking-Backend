@@ -1,13 +1,12 @@
 const User = require('../Model/user.js')
 const Otp = require('../Model/otp.js')
-const hotels =require('../Model/hotel.js')
 const bcrypt = require('bcrypt')
 const jwt  = require('jsonwebtoken')
 const {generateOtp,
        sendOtpToEmail,
 }  = require('../utils/userOtp.js')
 const Hotels = require('../Model/hotel.js')
-
+const { createError } = require('../utils/error.js')
 
 
 const register =  async (req, res, next) => {
@@ -45,8 +44,7 @@ const register =  async (req, res, next) => {
            res.status(200).json({ message: 'User registered successfully' });
 
        } catch (error) {
-              console.log(error);
-               res.status(500).json({ message: 'Internal Server Error' });
+              next(createError())
        }
    };
    
@@ -81,8 +79,6 @@ const login = async(req,res,next) =>{
        }
 }
 
-
-
  
  const otpVerify = async(req,res,next) =>{
 
@@ -110,7 +106,6 @@ const login = async(req,res,next) =>{
  }
 
  
-
 const otpResend = async(req,res,next) =>{
        const {email} = req.body
        // delete existing otp
@@ -159,10 +154,34 @@ const passwordReset = async(req,res,next) =>{
 
       } catch (error) {
               console.log(error);
-      }
-       
+      }       
 }
 
+
+const newPasswordSet = async(req,res,next) =>{
+       try {
+              const { newPassword,confirmnNewPassword,email} = req.body
+              const user = await User.findOne({email:email})
+              if (newPassword !== confirmnNewPassword) {
+                     return res.status(400).json({ message: 'Passwords do not match' });
+              }
+              const hashedPassword = await bcrypt.hash(newPassword,10)
+              await User.updateOne({email},{$set:{password:hashedPassword}})
+              const tocken  = jwt.sign({id:user._id,isAdmin:user.isAdmin},process.env.JWT_SECRET_KEY)
+                     const {password,isAdmin,...otherDetails} = user._doc
+                     res.cookie('access_tocken',tocken,{
+                            httpOnly:true,
+                            path:'/'
+                            }
+                            ).status(200).json({...otherDetails});
+       
+       } catch (error) {
+              console.log(error);
+              return res.status(400).json({message:'error'})
+       }
+     
+       
+}
 
 
 
@@ -173,6 +192,7 @@ module.exports = {
        login,
        otpVerify,
        otpResend,
-       passwordReset
+       passwordReset,
+       newPasswordSet
        
 }

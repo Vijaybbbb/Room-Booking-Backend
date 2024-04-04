@@ -4,7 +4,8 @@ const {register,
        login,
        otpVerify,
        otpResend,
-       passwordReset
+       passwordReset,
+       newPasswordSet
         } = require('../Controller/auth.js')
 
 const {verifyTocken}  = require('../utils/verifyTocken.js')
@@ -26,7 +27,8 @@ router.post('/otpResend', otpResend)
 //password reset
 router.post('/passwordReset',passwordReset)
 
-
+//new Password setting
+router.post('/newPasswordSet',newPasswordSet)
 
 
 module.exports  = router
