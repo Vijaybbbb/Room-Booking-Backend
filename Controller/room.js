@@ -31,7 +31,7 @@ const updateRoom  = async (req,res,next) =>{
               try {
                      await Hotels.findByIdAndUpdate(hotelId ,
                             {$push : {rooms:savedRoom._id}},
-                            
+                            {new:true}
                      )
               } catch (error) {
                       return next(createError(401,'Failed'))    
@@ -51,8 +51,7 @@ const deleteRoom  = async (req,res,next) =>{
        try{
               const savedRoom = await newRoom.save()
               try {
-                     await Hotels.findByIdAndUpdate(hotelId ,
-                            {$push : {rooms:savedRoom._id}})
+                     await Hotels.findByIdAndUpdate(hotelId)
               } catch (error) {
                       return next(createError(401,'Failed'))    
               }
@@ -70,5 +69,6 @@ const deleteRoom  = async (req,res,next) =>{
 
 module.exports = {
        createRoom,
-
+       updateRoom,
+       deleteRoom
 }

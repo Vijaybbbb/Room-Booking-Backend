@@ -1,21 +1,15 @@
 const express = require('express')
 const router = express.Router()
-
+const {createRoom,updateRoom,deleteRoom} = require('../Controller/room')
 
 //create room
-router.get('/',(req,res)=>{
-       res.send('rooms')
-})
+router.get('/createRoom',createRoom)
 
 //update room
-router.get('/',(req,res)=>{
-       res.send('rooms')
-})
+router.get('/updateRoom',updateRoom)
 
 //delete room
-router.get('/',(req,res)=>{
-       res.send('rooms')
-})
+router.get('/deleteRoom',deleteRoom)
 
 
 
