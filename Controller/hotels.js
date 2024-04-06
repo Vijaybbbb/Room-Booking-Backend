@@ -38,9 +38,18 @@ const deleteHotel = async (req,res,next) =>{
        }
 }
 
+const getAllHotels = async (req,res,next) =>{
+       try {
+              const hotels = await Hotels.find({})
+              res.json(hotels)
+       } catch (error) {
+              next(createError(200,'Failed to get all hotels'))
+       }
+}
 
 module.exports ={
        createHotel,
        updatedHotel,
-       deleteHotel
+       deleteHotel,
+       getAllHotels
 }

@@ -39,6 +39,7 @@ app.use('/admin',adminRouter)
 app.use('/hotels',hotelsRouter)
 app.use('/rooms',roomsRouter)
 
+
 //error handling middleware
 app.use((err,req,res,next)=>{
        const errorStatus  = err.status || 500

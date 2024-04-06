@@ -26,5 +26,5 @@ const roomSchemma = new mongoose.Schema({
 })
 
 
-const Room  = mongoose.model('room',roomSchemma)
+const Room  = mongoose.model('rooms',roomSchemma)
 module.exports = Room
