@@ -3,7 +3,8 @@ const router = express.Router()
 
 const {createHotel,
        updatedHotel,
-       getAllHotels
+       getAllHotels,
+       countByCity
 }  = require('../Controller/hotels.js')
 
 
@@ -11,10 +12,14 @@ const {createHotel,
 router.post('/',createHotel)
 
 //update hotel
-router.put('/:id',updatedHotel)
+router.put('/find/:id',updatedHotel)
 
 //get all hotels 
 router.get('/',getAllHotels)
+
+router.get('/countByCity',countByCity)
+
+router.get('/countByType')
 
 
 module.exports  = router
