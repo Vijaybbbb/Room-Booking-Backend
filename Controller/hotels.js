@@ -13,19 +13,17 @@ const createHotel = async(req,res,next) =>{
 }
 
 //update hotel function
-const updatedHotel = async(req,res,next) =>{
-       const updatedHotel = await  Hotels.findByIdAndUpdate(req.params.id,
-              {$set : req.body},
-              {new:true}
-       )
+const updatedHotel = async(req,res,next) =>{    
        try {
-            await Hotels.create(newHotel)  
+              const updatedHotel = await  Hotels.findByIdAndUpdate(req.params.id,
+                     {$set : req.body},
+                     {new:true}
+              )
             res.status(200)
        } catch (error) {
               next(createError(401,'Update Failed'))
        }
 }
-
 
 //deleteHotel function
 const deleteHotel = async (req,res,next) =>{
@@ -60,9 +58,27 @@ const countByCity = async (req,res,next) =>{
 }
 
 
+const countByType = async (req,res,next) =>{
 
+       try {
+              const hotelCount  = await Hotels.countDocuments({type:'hotel'})
+              const apartmentsCount  =await Hotels.countDocuments({type:'apartment'})
+              const resortCount  =await Hotels.countDocuments({type:'resort'})
+              const villaCount  =await Hotels.countDocuments({type:'villa'})
+              const cabinCount  =await Hotels.countDocuments({type:'cabin'})
+              
+              res.status().json([
+                     {type:"hotel",count:hotelCount},
+                     {type:"apartment",count:apartmentsCount},
+                     {type:"resort",count:resortCount},
+                     {type:"villa",count:villaCount},
+                     {type:"cabin",count:cabinCount},
 
-
+              ])
+       } catch (error) {
+              console.log(error);
+       }
+}
 
 
 module.exports ={
@@ -70,5 +86,6 @@ module.exports ={
        updatedHotel,
        deleteHotel,
        getAllHotels,
-       countByCity
+       countByCity,
+       countByType
 }

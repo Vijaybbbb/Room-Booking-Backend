@@ -13,7 +13,6 @@ const {register,
 //register User             
  router.post('/register', register)
 
-
 //Login User
 router.post('/login',login)
 
