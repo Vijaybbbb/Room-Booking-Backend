@@ -6,10 +6,11 @@ const createHotel = async(req,res,next) =>{
        const newHotel  = req.body
        try {
             await Hotels.create(newHotel)  
-            res.status(200)
+            res.status(200).json({message:"success"})
        } catch (error) {
               next(createError(401,'Creation Failed'))
        }
+
 }
 
 //update hotel function
@@ -66,8 +67,8 @@ const countByType = async (req,res,next) =>{
               const resortCount  =await Hotels.countDocuments({type:'resort'})
               const villaCount  =await Hotels.countDocuments({type:'villa'})
               const cabinCount  =await Hotels.countDocuments({type:'cabin'})
-              
-              res.status().json([
+           //   console.log(hotelCount,apartmentsCount,resortCount,villaCount,cabinCount);
+              res.status(200).json([
                      {type:"hotel",count:hotelCount},
                      {type:"apartment",count:apartmentsCount},
                      {type:"resort",count:resortCount},
@@ -75,6 +76,7 @@ const countByType = async (req,res,next) =>{
                      {type:"cabin",count:cabinCount},
 
               ])
+              
        } catch (error) {
               console.log(error);
        }
