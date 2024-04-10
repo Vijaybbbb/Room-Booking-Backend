@@ -37,15 +37,27 @@ const deleteHotel = async (req,res,next) =>{
        }
 }
 
+//get all featured hotels list
 const getAllHotels = async (req,res,next) =>{
+       const  {min,max,limit,...others}  = req.query 
+      
        try {
-              const hotels = await Hotels.find({})
+              const hotels = await Hotels.find({cheapestPrice:{$gt:min || 1,$lt:max || 999}}).limit(limit || null)
               res.json(hotels)
        } catch (error) {
               next(createError(200,'Failed to get all hotels'))
        }
 }
 
+const getAllFeaturedHotels = async (req,res,next) =>{
+       try {
+              const hotels = await Hotels.find({featured:true}).limit(4)
+              res.json(hotels)
+       } catch (error) {
+              next(createError(200,'Failed to get all hotels'))
+       }
+}
+//get hotel by city
 const countByCity = async (req,res,next) =>{
        const cities = req.query.cities.split(',')
        try {
@@ -54,11 +66,11 @@ const countByCity = async (req,res,next) =>{
               }))
               res.json(list)
        } catch (error) {
-              next(createError(200,'Failed to get all hotels'))
+              next(createError(200,'Failed to get all hotels')) 
        }
 }
 
-
+//get hotels by type
 const countByType = async (req,res,next) =>{
 
        try {
@@ -67,7 +79,6 @@ const countByType = async (req,res,next) =>{
               const resortCount  =await Hotels.countDocuments({type:'resort'})
               const villaCount  =await Hotels.countDocuments({type:'villa'})
               const cabinCount  =await Hotels.countDocuments({type:'cabin'})
-           //   console.log(hotelCount,apartmentsCount,resortCount,villaCount,cabinCount);
               res.status(200).json([
                      {type:"hotel",count:hotelCount},
                      {type:"apartment",count:apartmentsCount},
@@ -89,5 +100,6 @@ module.exports ={
        deleteHotel,
        getAllHotels,
        countByCity,
-       countByType
+       countByType,
+       getAllFeaturedHotels
 }

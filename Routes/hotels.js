@@ -5,7 +5,8 @@ const {createHotel,
        updatedHotel,
        getAllHotels,
        countByCity,
-       countByType
+       countByType,
+       getAllFeaturedHotels
 }  = require('../Controller/hotels.js')
 
 
@@ -17,6 +18,9 @@ router.put('/find/:id',updatedHotel)
 
 //get all hotels 
 router.get('/',getAllHotels)
+
+//get all featured hotels 
+router.get('/featured',getAllFeaturedHotels)
 
 router.get('/countByCity',countByCity)
 
