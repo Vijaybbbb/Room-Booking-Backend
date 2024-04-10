@@ -37,18 +37,18 @@ const deleteHotel = async (req,res,next) =>{
        }
 }
 
-//get all featured hotels list
+//get all  hotels list
 const getAllHotels = async (req,res,next) =>{
-       const  {min,max,limit,...others}  = req.query 
-      
+       const  {min,max}  = req.query 
        try {
-              const hotels = await Hotels.find({cheapestPrice:{$gt:min || 1,$lt:max || 999}}).limit(limit || null)
+              const hotels = await Hotels.find({cheapestPrice:{$gt:min || 1,$lt:max || 999}})
               res.json(hotels)
        } catch (error) {
               next(createError(200,'Failed to get all hotels'))
        }
 }
 
+//get all  featured hotels
 const getAllFeaturedHotels = async (req,res,next) =>{
        try {
               const hotels = await Hotels.find({featured:true}).limit(4)
@@ -57,6 +57,8 @@ const getAllFeaturedHotels = async (req,res,next) =>{
               next(createError(200,'Failed to get all hotels'))
        }
 }
+
+
 //get hotel by city
 const countByCity = async (req,res,next) =>{
        const cities = req.query.cities.split(',')
