@@ -6,7 +6,8 @@ const {createHotel,
        getAllHotels,
        countByCity,
        countByType,
-       getAllFeaturedHotels
+       getAllFeaturedHotels,
+       getHotelsByFilter
 }  = require('../Controller/hotels.js')
 
 
@@ -22,8 +23,13 @@ router.get('/',getAllHotels)
 //get all featured hotels 
 router.get('/featured',getAllFeaturedHotels)
 
+//get hotel by filtering
+router.get('/filter',getHotelsByFilter)
+
+//get hotels by city
 router.get('/countByCity',countByCity)
 
+//get hotels by type
 router.get('/countByType',countByType)
 
 

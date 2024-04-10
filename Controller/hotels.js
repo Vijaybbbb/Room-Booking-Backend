@@ -58,6 +58,20 @@ const getAllFeaturedHotels = async (req,res,next) =>{
        }
 }
 
+//get hotels by filter metthods
+const getHotelsByFilter  = async() =>{
+       const  {location,min,max,date}  = req.query
+       const query = {
+
+       } 
+       try {
+              const hotels = await Hotels.find(query)
+              res.json(hotels)
+       } catch (error) {
+              next(createError(200,'Failed to get all hotels'))
+       }
+}
+
 
 //get hotel by city
 const countByCity = async (req,res,next) =>{
@@ -103,5 +117,6 @@ module.exports ={
        getAllHotels,
        countByCity,
        countByType,
-       getAllFeaturedHotels
+       getAllFeaturedHotels,
+       getHotelsByFilter
 }
