@@ -39,9 +39,11 @@ const deleteHotel = async (req,res,next) =>{
 
 //get all  hotels list
 const getAllHotels = async (req,res,next) =>{
-       const  {min,max}  = req.query 
+       const  {min,max,city}  = req.query 
        try {
-              const hotels = await Hotels.find({cheapestPrice:{$gt:min || 1,$lt:max || 999}})
+              const hotels = await Hotels.find({
+                     city: { $regex: new RegExp(city, "i") },
+                     cheapestPrice:{$gt:min || 1,$lt:max || 999}})
               res.json(hotels)
        } catch (error) {
               next(createError(200,'Failed to get all hotels'))
