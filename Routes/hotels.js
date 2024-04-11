@@ -7,7 +7,8 @@ const {createHotel,
        countByCity,
        countByType,
        getAllFeaturedHotels,
-       getHotelsByFilter
+       getHotelsByFilter,
+       getSingleHotel
 }  = require('../Controller/hotels.js')
 
 
@@ -31,6 +32,9 @@ router.get('/countByCity',countByCity)
 
 //get hotels by type
 router.get('/countByType',countByType)
+
+//get single hotel
+router.get('/:id',getSingleHotel)
 
 
 module.exports  = router

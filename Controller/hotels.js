@@ -72,6 +72,17 @@ const getHotelsByFilter  = async() =>{
        }
 }
 
+//get single hotel by id
+const getSingleHotel = async(req,res,next) =>{
+       const id  = req.params.id
+       try {
+              const hotel  = await Hotels.findById(id)
+              return res.status(200).json(hotel)
+       } catch (error) {
+              next(createError(401,'Hotel not found'))
+       }
+}
+
 
 //get hotel by city
 const countByCity = async (req,res,next) =>{
@@ -118,5 +129,6 @@ module.exports ={
        countByCity,
        countByType,
        getAllFeaturedHotels,
-       getHotelsByFilter
+       getHotelsByFilter,
+       getSingleHotel
 }
