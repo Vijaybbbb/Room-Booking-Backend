@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const {register,
        login,
-       otpVerify,
+       otpVerify, 
        otpResend,
        passwordReset,
        newPasswordSet

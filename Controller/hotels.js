@@ -1,4 +1,6 @@
 const Hotels = require('../Model/hotel.js')
+const Room = require('../Model/room.js')
+
 const { createError } = require('../utils/error.js')
 
 //create hotel function
@@ -123,6 +125,19 @@ const countByType = async (req,res,next) =>{
 }
 
 
+const getHotelRooms  = async (req,res,next) =>{
+       try {
+              const hotel = Hotels.findById(req.params.id)
+              const list  = await Promise.all(hotel.rooms.map(room=>{
+              return Room.findById(room)
+
+              }))
+       } catch (error) {
+              next(createError(401,'failed to get room'))
+       }
+}
+
+
 module.exports ={
        createHotel,
        updatedHotel,
@@ -132,5 +147,6 @@ module.exports ={
        countByType,
        getAllFeaturedHotels,
        getHotelsByFilter,
-       getSingleHotel
+       getSingleHotel,
+       getHotelRooms
 }
