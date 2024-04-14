@@ -124,14 +124,15 @@ const countByType = async (req,res,next) =>{
        }
 }
 
-
+//get room from unique hotel  ids
 const getHotelRooms  = async (req,res,next) =>{
        try {
-              const hotel = Hotels.findById(req.params.id)
+              const hotel = await Hotels.findById(req.params.id)
               const list  = await Promise.all(hotel.rooms.map(room=>{
-              return Room.findById(room)
-
+                      return Room.findById(room)
               }))
+              return res.status(200).json(list)
+
        } catch (error) {
               next(createError(401,'failed to get room'))
        }
