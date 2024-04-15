@@ -68,7 +68,7 @@ const deleteRoom  = async (req,res,next) =>{
 const updateRoomAvailability  = async(req,res,next) =>{
        try {
               await Room.updateOne({'roomNumbers._id':req.params.id},{
-                     $push:{
+                     $addToSet:{
                             'roomNumbers.$.unavailableDates':req.body.dates
                      }
               })
