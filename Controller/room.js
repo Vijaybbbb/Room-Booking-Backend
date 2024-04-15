@@ -65,7 +65,17 @@ const deleteRoom  = async (req,res,next) =>{
        }
 }
 
-
+const updateRoomAvailability  = async(req,res,next) =>{
+       try {
+              await Room.updateOne({'roomNumbers._id':req.params.id},{
+                     $push:{
+                            'roomNumbers.$.unavailableDates':req.body.dates
+                     }
+              })
+       } catch (error) {
+              
+       }
+}
 
 
 
@@ -73,5 +83,6 @@ const deleteRoom  = async (req,res,next) =>{
 module.exports = {
        createRoom,
        updateRoom,
-       deleteRoom
+       deleteRoom,
+       updateRoomAvailability
 }
