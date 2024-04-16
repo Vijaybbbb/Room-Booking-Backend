@@ -6,7 +6,7 @@ const verifyTocken = async(req,res,next) =>{
        const tocken = await req.cookies.access_tocken;
        const userId = req.query.userId
        if(!tocken){
-              return next(createError(401,'Invalid Creadentials'))
+             next(createError(401,'Invalid Creadentials'))
        }
        jwt.verify(tocken,process.env.JWT_SECRET_KEY,(err,user)=>{
               if(err){

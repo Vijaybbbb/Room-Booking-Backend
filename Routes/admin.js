@@ -3,7 +3,7 @@ const User = require('../Model/user')
 const router = express.Router()
 const bcrypt = require('bcrypt')
 const jwt  = require('jsonwebtoken')
-const { adminLogin, adminHome } = require('../Controller/admin')
+const { adminLogin, adminHome,getAllUsers } = require('../Controller/admin')
 const { verifyTocken } = require('../utils/verifyTocken')
 
 
@@ -12,6 +12,9 @@ router.post('/login',adminLogin)
 
 //admin Home Page Route
 router.post('/adminHome',verifyTocken,adminHome)
+
+//get all registered users
+router.get('/users',getAllUsers)
  
 
 module.exports  = router

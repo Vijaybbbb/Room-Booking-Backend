@@ -42,7 +42,20 @@ const adminHome  = async (req,res,next)=>{
        return res.status(200).json({message:'success'})
 }
 
+const getAllUsers  = async (req,res,next)=>{
+       
+       try {
+              const users = User.find()
+              return res.status(200).json(users)
+
+       } catch (error) {
+              next(createError(401,'Failed to get all users'))  
+       }
+}
+
+
 module.exports = {
        adminLogin,
-       adminHome
+       adminHome,
+       getAllUsers
 }
