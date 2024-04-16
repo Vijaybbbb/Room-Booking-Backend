@@ -2,7 +2,7 @@ const Room  =  require('../Model/room')
 const Hotels  =  require('../Model/hotel')
 const {createError}  = require('../utils/error.js')
 
-
+//create new room
 const  createRoom  = async (req,res,next) =>{
 
        const hotelId = req.params.id;
@@ -22,7 +22,7 @@ const  createRoom  = async (req,res,next) =>{
               return next(createError(401,'Failed'))
        }
 }
-
+//update rooom
 const updateRoom  = async (req,res,next) =>{
 
        const hotelId = req.params.hotelId;
@@ -44,7 +44,7 @@ const updateRoom  = async (req,res,next) =>{
        }
 }
 
-
+//delete room
 const deleteRoom  = async (req,res,next) =>{
 
        const hotelId = req.params.hotelId;
@@ -65,17 +65,20 @@ const deleteRoom  = async (req,res,next) =>{
        }
 }
 
+//checking room availability
 const updateRoomAvailability  = async(req,res,next) =>{
        try {
+              const dateToAdd  = req.body.dates;
               await Room.updateOne({'roomNumbers._id':req.params.id},{
-                     $addToSet:{
-                            'roomNumbers.$.unavailableDates':req.body.dates
+                     $push:{
+                            'roomNumbers.$.unavailableDates':{$each : dateToAdd}
                      }
               })
+              console.log('added');
        } catch (error) {
               
        }
-}
+} 
 
 
 
