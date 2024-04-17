@@ -1,6 +1,6 @@
 const Room  =  require('../Model/room')
 const Hotels  =  require('../Model/hotel')
-const {createError}  = require('../utils/error.js')
+const {createError}   =  require('../utils/error.js')
 
 //create new room
 const  createRoom  = async (req,res,next) =>{
