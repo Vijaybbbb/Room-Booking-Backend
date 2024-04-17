@@ -74,7 +74,7 @@ const updateRoomAvailability  = async(req,res,next) =>{
                             'roomNumbers.$.unavailableDates':{$each : dateToAdd}
                      }
               })
-              console.log('added');
+           
        } catch (error) {
               
        }

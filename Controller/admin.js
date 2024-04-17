@@ -45,7 +45,7 @@ const adminHome  = async (req,res,next)=>{
 const getAllUsers  = async (req,res,next)=>{
        
        try {
-              const users = User.find()
+              const users = await User.find({isAdmin:false})
               return res.status(200).json(users)
 
        } catch (error) {
