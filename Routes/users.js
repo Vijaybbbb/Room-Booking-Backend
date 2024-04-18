@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const {verifyTocken}  = require('../utils/verifyTocken.js')
-const { getSingleUser } = require('../Controller/users.js')
+const { getSingleUser, updateUser, deleteUser } = require('../Controller/users.js')
 
 
 router.post('/checkAuthentication',verifyTocken,(req,res)=>{
@@ -10,6 +10,9 @@ router.post('/checkAuthentication',verifyTocken,(req,res)=>{
 
 router.get('/singleUser',getSingleUser)
 
+router.put('/updateUser',updateUser)
+
+router.delete('/deleteUser',deleteUser)
 
 
 
