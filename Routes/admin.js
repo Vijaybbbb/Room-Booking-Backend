@@ -16,6 +16,7 @@ router.post('/adminHome',verifyTocken,adminHome)
 //get all registered users
 router.get('/users',getAllUsers)
  
+//get all registered hotels
 router.get('/hotels',getAllHotels)
 
 module.exports  = router
