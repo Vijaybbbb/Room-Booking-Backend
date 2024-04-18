@@ -1,4 +1,6 @@
 const User = require("../Model/user");
+const Hotels = require("../Model/hotel");
+
 const { createError } = require("../utils/error");
 const bcrypt = require('bcrypt')
 const jwt  = require('jsonwebtoken')
@@ -54,8 +56,23 @@ const getAllUsers  = async (req,res,next)=>{
 }
 
 
+const getAllHotels  = async (req,res,next)=>{
+       
+       try {
+              const hotels = await Hotels.find()
+              return res.status(200).json(hotels)
+
+       } catch (error) {
+              next(createError(401,'Failed to get all users'))  
+       }
+}
+
+
+
 module.exports = {
        adminLogin,
        adminHome,
-       getAllUsers
+       getAllUsers,
+       getAllHotels
+       
 }

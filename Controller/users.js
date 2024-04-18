@@ -22,7 +22,7 @@ const updateUser = async (req,res,next)=>{
        try {          
               
               const user = await User.findByIdAndUpdate(req.query.id,{
-                     $set:{username:username,email:email}
+                     $set:{username:username,email:email}  
               })
               if(user){
                      next(createError(401,'User not found'))
