@@ -87,7 +87,21 @@ const getSingleRoom  = async(req,res,next) =>{
         if(!room){
               next(createError(401,'Room not found'))
         } 
-        res.status(200).json({message:"Room Found"})
+        res.status(200).json(room)
+       } catch (error) {
+              next(createError(401,'something went wrong'))
+              
+       }
+} 
+
+//get a single rooom
+const getAllRoom  = async(req,res,next) =>{
+       try {
+        const rooms = await Room.find() 
+        if(!rooms){
+              next(createError(401,'No Room found'))
+        } 
+        res.status(200).json(rooms)
        } catch (error) {
               next(createError(401,'something went wrong'))
               
@@ -95,11 +109,11 @@ const getSingleRoom  = async(req,res,next) =>{
 } 
 
 
-
 module.exports = {
        createRoom,
        updateRoom,
        deleteRoom,
        updateRoomAvailability,
-       getSingleRoom
+       getSingleRoom,
+       getAllRoom
 }
