@@ -18,13 +18,13 @@ router.put('/updateRoom/:id/:hotelId',updateRoom)
 //delete room
 router.delete('/deleteRoom/:id/:hotelId',deleteRoom)
 
-
+//check room availabilty
 router.put('/availability/:id',updateRoomAvailability)
 
-
+//get a single room details
 router.get('/singleRoom/:id',getSingleRoom)
 
-
+//get all rooms
 router.get('/allRooms',getAllRoom)
 
 
