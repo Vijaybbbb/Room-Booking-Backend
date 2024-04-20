@@ -80,6 +80,19 @@ const updateRoomAvailability  = async(req,res,next) =>{
        }
 } 
 
+//get a single rooom
+const getSingleRoom  = async(req,res,next) =>{
+       try {
+        const room = await Room.findById(req.params.id) 
+        if(!room){
+              next(createError(401,'Room not found'))
+        } 
+        res.status(200).json({message:"Room Found"})
+       } catch (error) {
+              next(createError(401,'something went wrong'))
+              
+       }
+} 
 
 
 
@@ -87,5 +100,6 @@ module.exports = {
        createRoom,
        updateRoom,
        deleteRoom,
-       updateRoomAvailability
+       updateRoomAvailability,
+       getSingleRoom
 }

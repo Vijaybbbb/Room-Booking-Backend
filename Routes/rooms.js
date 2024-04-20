@@ -3,7 +3,9 @@ const router = express.Router()
 const {createRoom,
        updateRoom,
        deleteRoom,
-       updateRoomAvailability} = require('../Controller/room')
+       updateRoomAvailability,
+       getSingleRoom
+} = require('../Controller/room')
 const {verifyTocken}  = require('../utils/verifyTocken.js')
 
 //create room
@@ -16,6 +18,10 @@ router.put('/updateRoom/:id/:hotelId',updateRoom)
 router.delete('/deleteRoom/:id/:hotelId',deleteRoom)
 
 router.put('/availability/:id',updateRoomAvailability)
+
+
+router.get('/singleRoom/:id',getSingleRoom)
+
 
 
 module.exports  = router
