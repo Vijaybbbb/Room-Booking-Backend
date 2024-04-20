@@ -16,13 +16,13 @@ const createHotel = async(req,res,next) =>{
 }
 
 //update hotel function
-const updatedHotel = async(req,res,next) =>{    
+const updatedHotel = async(req,res,next) =>{  
        try {
               const updatedHotel = await  Hotels.findByIdAndUpdate(req.params.id,
                      {$set : req.body},
                      {new:true}
               )
-            res.status(200)
+            res.status(200).json({message:'Hotel has been updated'})
        } catch (error) {
               next(createError(401,'Update Failed'))
        }
@@ -35,7 +35,7 @@ const deleteHotel = async (req,res,next) =>{
               res.status(200).json({message:'Hotel has been deleted'})
        } catch (error) {
               console.log(error);
-              next(createError(401,'Deletion Failed'))
+              next(createError(401,'Deletion Failed')) 
        }
 }
 
