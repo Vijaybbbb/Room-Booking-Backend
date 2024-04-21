@@ -1,6 +1,7 @@
 const User = require("../Model/user");
 const Hotels = require("../Model/hotel");
 
+
 const { createError } = require("../utils/error");
 const bcrypt = require('bcrypt')
 const jwt  = require('jsonwebtoken')
@@ -68,11 +69,36 @@ const getAllHotels  = async (req,res,next)=>{
 }
 
 
+const createNewUser  = async (req,res,next)=>{
+     
+       try {
+           const { username, email, password } = req.body;
+           const findExistingUser = await User.findOne({ email });
+           if (findExistingUser) {
+               return next(createError(401,'User Already Exists'))
+           }
+           const hashedPassword = await bcrypt.hash(password,10)   
+           const newUser = {
+             username: username, 
+             email: email,
+             password: hashedPassword,   
+         };
+         await User.create(newUser)
+           res.status(200).json({ message: 'User registered successfully' });
+
+       } catch (error) {
+              next(createError(401,'Failed to create users'))  
+       }
+}
+
+
+
+
 
 module.exports = {
        adminLogin,
        adminHome,
        getAllUsers,
-       getAllHotels
-       
+       getAllHotels,
+       createNewUser
 }
