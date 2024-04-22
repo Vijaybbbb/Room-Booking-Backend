@@ -53,9 +53,24 @@ const deleteUser = async (req,res,next)=>{
 
 }
 
+const addToBookings = async (req,res,next)=>{
+
+       try {          
+              
+              
+              
+           
+              } catch (err) {
+                     next(createError(401,'Failed to Book Room'))
+                     
+               }
+
+}
+
 module.exports = {
        getSingleUser,
        updateUser,
-       deleteUser
+       deleteUser,
+       addToBookings
 
 }

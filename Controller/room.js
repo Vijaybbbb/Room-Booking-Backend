@@ -1,6 +1,7 @@
 const Room  =  require('../Model/room')
 const Hotels  =  require('../Model/hotel')
-const {createError}   =  require('../utils/error.js')
+const {createError}   =  require('../utils/error.js');
+const Bookings = require('../Model/myBookings.js');
 
 //create new room
 const  createRoom  = async (req,res,next) =>{
@@ -69,14 +70,43 @@ const deleteRoom  = async (req,res,next) =>{
 const updateRoomAvailability  = async(req,res,next) =>{
        try {
               const dateToAdd  = req.body.dates;
+              const userId  = req.body.userId;
+              const hotelId  = req.body.hotelId;
+              const roomId = req.params.id
+              const price = req.body.price
+
+              const dates = dateToAdd.map(timestamp => {
+                     const date = new Date(timestamp);
+                     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                 });
+                 
+                 console.log(dates);
               await Room.updateOne({'roomNumbers._id':req.params.id},{
                      $push:{
                             'roomNumbers.$.unavailableDates':{$each : dateToAdd}
                      }
               })
+              
+              const bookingDetails = 
+                     {
+                            hotel:hotelId,
+                            room:roomId,
+                            checkInDate:dates[0],
+                            checkOutDate:dates[dates.length-1],
+                            totalPrice:price
+                     }
+              
+              // Create new booking entry
+              const newBooking = new Bookings({
+                     userId: userId,
+                     bookings: [bookingDetails]
+              });
+
+              // Save the booking
+              await newBooking.save();
            
        } catch (error) {
-              
+              console.log(error);
        }
 } 
 
