@@ -80,7 +80,6 @@ const updateRoomAvailability  = async(req,res,next) =>{
                      return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
                  });
                  
-                 console.log(dates);
               await Room.updateOne({'roomNumbers._id':req.params.id},{
                      $push:{
                             'roomNumbers.$.unavailableDates':{$each : dateToAdd}
