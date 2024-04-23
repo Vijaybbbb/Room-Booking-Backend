@@ -4,7 +4,8 @@ const {verifyTocken}  = require('../utils/verifyTocken.js')
 const { getSingleUser,
        updateUser,
        deleteUser,
-       addToBookings } = require('../Controller/users.js')
+       createOrder,
+        } = require('../Controller/users.js')
 
 
 router.post('/checkAuthentication',verifyTocken,(req,res)=>{
@@ -17,7 +18,7 @@ router.put('/updateUser',updateUser)
 
 router.delete('/deleteUser',deleteUser)
 
-router.post('/addToBookings',addToBookings)
+router.post('/createOrder',createOrder) 
 
 
 module.exports  = router

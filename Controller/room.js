@@ -75,7 +75,7 @@ const updateRoomAvailability  = async(req,res,next) =>{
               const roomId = req.params.id
               const price = req.body.price
 
-              const dates = dateToAdd.map(timestamp => {
+              const dates = dateToAdd?.map(timestamp => {
                      const date = new Date(timestamp);
                      return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
                  });
