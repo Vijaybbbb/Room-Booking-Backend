@@ -102,7 +102,7 @@ const createOrder = async (req, res, next) => {
 
                      const data = await Bookings.findOne({ userId: userId })
                      const lastBookingId = data.bookings[data.bookings.length-1]._id
-                     console.log(lastBookingId);     
+                        
 
                      try {
                             const amount = price * 100
@@ -122,7 +122,8 @@ const createOrder = async (req, res, next) => {
                                                         key_id: RAZORPAY_ID_KEY,
                                                         name: hotelName,
                                                         amount: amount,
-                                                        order: order
+                                                        order: order,
+                                                        bookingId:lastBookingId
                                                  })
                                           } else {
                                                  console.log(err);
@@ -150,7 +151,7 @@ const createOrder = async (req, res, next) => {
 
 
 const verifyPayment = (req, res, next) => {
-       const { response, order } = req.body
+       const { response, bookingId } = req.body
        
        const payment_id = response.razorpay_payment_id;
        const order_id = response.razorpay_order_id
@@ -165,7 +166,7 @@ const verifyPayment = (req, res, next) => {
 
               if(digest == signature){
                      console.log("payment successs");
-                     PaymentStatus() 
+                     PaymentStatus(bookingId) 
               }
 
        } catch (error) {

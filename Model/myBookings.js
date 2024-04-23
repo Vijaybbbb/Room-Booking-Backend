@@ -8,10 +8,6 @@ const bookingsSchema = new mongoose.Schema({
         ref: 'user',
         required: true
     },
-    status: {
-        type: String,
-        default: 'Processing'
-    },
     bookings: [
         {
             hotel: {
@@ -36,7 +32,11 @@ const bookingsSchema = new mongoose.Schema({
             totalPrice: {
                 type: Number,
                 required: true
-            }
+            },
+            status: {
+                type: String,
+                default: 'Processing'
+            },
         }
     ]
 }, { timestamps: true })
