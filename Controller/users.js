@@ -57,6 +57,7 @@ const deleteUser = async (req,res,next)=>{
 }
 
 const  createOrder = async (req,res,next)=>{
+
        const {hotelId,hotelName,userId,rooms,price,dates} = req.body
 
        try {
@@ -84,14 +85,7 @@ const  createOrder = async (req,res,next)=>{
            
 
             try {          
-              const bookingData = {
-                     hotel:hotelId,
-                     rooms:rooms,
-                     checkInDate:newDates[0],
-                     checkOutDate:newDates[newDates.length -1 ],
-                     totalPrice:price,
-              }
-
+             
               // Create new Booking instance
              await Bookings.updateOne({userId:userId},{$addToSet:{
               bookings:{
@@ -114,14 +108,15 @@ const  createOrder = async (req,res,next)=>{
               razorpayInstance.orders.create(options,
                      (err,order)=>{
                             if(!err){
+                                   
                                    res.status(200).json({
                                           success:true,
                                           msg:'order created',
                                           order_id:order.id,
                                           key_id:RAZORPAY_ID_KEY,
                                           name:hotelName,
-                                          amount:amount
-                                          
+                                          amount:amount,
+                                          order:order
                                    })
                             }else{
                                  console.log(err);
@@ -148,8 +143,8 @@ const  createOrder = async (req,res,next)=>{
 }
 
 
-const createOrder1 = (req,res,next)=>{
-       const {hotelId,hotelName,userId,rooms,price,dates} = req.body
+const verifyPayment = (req,res,next)=>{
+       
    
     
 }
@@ -159,6 +154,7 @@ module.exports = {
        updateUser,
        deleteUser,
        createOrder,
+       verifyPayment
        
       
 }
