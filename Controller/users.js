@@ -3,7 +3,8 @@ const User = require("../Model/user")
 const { createError } = require("../utils/error")
 const mongoose  = require('mongoose')
 const { razorpayInstance } = require("../utils/paymentController")
-const {RAZORPAY_ID_KEY} = process.env
+const {RAZORPAY_ID_KEY,RAZORPAY_SECRET_KEY} = process.env
+const crypto = require('crypto')
 
 const getSingleUser = async (req,res,next)=>{
        try {          
@@ -56,86 +57,91 @@ const deleteUser = async (req,res,next)=>{
 
 }
 
-const  createOrder = async (req,res,next)=>{
+const createOrder = async (req, res, next) => {
 
-       const {hotelId,hotelName,userId,rooms,price,dates} = req.body
+       const { hotelId, hotelName, userId, rooms, price, dates } = req.body
 
        try {
-              let newDates   = []
-             function formatDate(timestamp) {
-              // Convert timestamp to milliseconds
-              var date = new Date(timestamp);
-          
-              // Options for formatting the date
-              var options = { 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: '2-digit' 
-              };
-          
-              // Format the date using toLocaleDateString method
-              return date.toLocaleDateString('en-US', options);
-          }
+              let newDates = []
+              function formatDate(timestamp) {
+                     // Convert timestamp to milliseconds
+                     var date = new Date(timestamp);
 
-          dates.forEach(function(timestamp) {
-              newDates.push(formatDate(timestamp))
-          });
+                     // Options for formatting the date
+                     var options = {
+                            year: 'numeric',
+                            month: 'long',
+                            day: '2-digit'
+                     };
 
-
-           
-
-            try {          
-             
-              // Create new Booking instance
-             await Bookings.updateOne({userId:userId},{$addToSet:{
-              bookings:{
-                     hotel:hotelId,
-                     rooms:rooms[0],
-                     checkInDate:newDates[0],
-                     checkOutDate:newDates[newDates.length -1 ],
-                     totalPrice:price,
+                     // Format the date using toLocaleDateString method
+                     return date.toLocaleDateString('en-US', options);
               }
-             }})
 
-            
-             try {
-              const amount  = price * 100
-              const options ={
-                     amount:amount,
-                     currency:'INR',
-                     receipt:'vijayramkp2002@gmail.com'
-              }  
-              razorpayInstance.orders.create(options,
-                     (err,order)=>{
-                            if(!err){
-                                   
-                                   res.status(200).json({
-                                          success:true,
-                                          msg:'order created',
-                                          order_id:order.id,
-                                          key_id:RAZORPAY_ID_KEY,
-                                          name:hotelName,
-                                          amount:amount,
-                                          order:order
-                                   })
-                            }else{
-                                 console.log(err);
+              dates.forEach(function (timestamp) {
+                     newDates.push(formatDate(timestamp))
+              });
+
+
+
+
+              try {
+
+                     // Create new Booking instance
+                     const bookingResult =  await Bookings.updateOne({ userId: userId }, {
+                            $addToSet: {
+                                   bookings: {
+                                          hotel: hotelId,
+                                          rooms: rooms[0],
+                                          checkInDate: newDates[0],
+                                          checkOutDate: newDates[newDates.length - 1],
+                                          totalPrice: price,
+                                   }
                             }
+                     },{upsert:true})
+
+                     const data = await Bookings.findOne({ userId: userId })
+                     const lastBookingId = data.bookings[data.bookings.length-1]._id
+                     console.log(lastBookingId);     
+
+                     try {
+                            const amount = price * 100
+                            const options = {
+                                   amount: amount,
+                                   currency: 'INR',
+                                   receipt: 'vijayramkp2002@gmail.com'
+                            }
+                            razorpayInstance.orders.create(options,
+                                   (err, order) => {
+                                          if (!err) {
+
+                                                 res.status(200).json({
+                                                        success: true,
+                                                        msg: 'order created',
+                                                        order_id: order.id,
+                                                        key_id: RAZORPAY_ID_KEY,
+                                                        name: hotelName,
+                                                        amount: amount,
+                                                        order: order
+                                                 })
+                                          } else {
+                                                 console.log(err);
+                                          }
+                                   }
+                            )
+
+
+
+
+
+                     } catch (error) {
+
                      }
-              )
 
-
-
-
-
-} catch (error) {
-       
-}
-           
               } catch (error) {
                      console.log(error);
-                     
-               }
+
+              }
        } catch (error) {
               console.log(error);
        }
@@ -143,11 +149,40 @@ const  createOrder = async (req,res,next)=>{
 }
 
 
-const verifyPayment = (req,res,next)=>{
+const verifyPayment = (req, res, next) => {
+       const { response, order } = req.body
        
-   
-    
+       const payment_id = response.razorpay_payment_id;
+       const order_id = response.razorpay_order_id
+       const signature = response.razorpay_signature;
+
+       try {
+              const hmac = crypto.createHmac('sha256', RAZORPAY_SECRET_KEY);
+              hmac.update(order_id +'|'+ payment_id);
+
+              // Calculating the HMAC digest (resulting hash)
+              const digest = hmac.digest('hex');
+
+              if(digest == signature){
+                     console.log("payment successs");
+                     PaymentStatus() 
+              }
+
+       } catch (error) {
+              
+              next(createError(401,'Payment Failed'))
+       }
+
 }
+
+
+function PaymentStatus(){
+
+}
+
+
+
+
 
 module.exports = {
        getSingleUser,
