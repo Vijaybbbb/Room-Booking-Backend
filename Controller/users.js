@@ -237,6 +237,28 @@ const  getAllBookings  = async (req,res,next) =>{
 }
 
 
+const  cancelOrder  = async (req,res,next) =>{
+       const {orderId,userId} = req.body
+       try {
+              await Bookings.updateOne(
+                     // Filter criteria
+                     { 
+                       userId:userId , 
+                       "bookings._id":orderId
+                     },
+                     // Update operation
+                     { 
+                       $set: { "bookings.$.status": "Canceled" } 
+                     }
+                   )
+                   return res.status(200).json('success')
+                   
+       } catch (error) {
+                     next(createError(401,'Failed to cancel order'))
+
+       }
+}
+
 
 // async function findDetails(hotelId, rooms) {
 //        try {
@@ -271,7 +293,8 @@ module.exports = {
        deleteUser,
        createOrder,
        verifyPayment,
-       getAllBookings
+       getAllBookings,
+       cancelOrder
        
       
 }
