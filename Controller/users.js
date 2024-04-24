@@ -5,6 +5,8 @@ const mongoose  = require('mongoose')
 const { razorpayInstance } = require("../utils/paymentController")
 const {RAZORPAY_ID_KEY,RAZORPAY_SECRET_KEY} = process.env
 const crypto = require('crypto')
+const Hotels = require("../Model/hotel")
+const Room = require("../Model/room")
 
 const getSingleUser = async (req,res,next)=>{
        try {          
@@ -59,7 +61,9 @@ const deleteUser = async (req,res,next)=>{
 
 const createOrder = async (req, res, next) => {
 
-       const { hotelId, hotelName, userId, rooms, price, dates } = req.body
+       const { hotelId, hotelName, userId, rooms, price, dates , roomNumbers } = req.body
+       console.log(roomNumbers);
+       const hotel = await Hotels.findById(hotelId);
 
        try {
               let newDates = []
@@ -86,20 +90,41 @@ const createOrder = async (req, res, next) => {
 
 
               try {
-
                      // Create new Booking instance
-                     const bookingResult =  await Bookings.updateOne({ userId: userId }, {
-                            $addToSet: {
-                                   bookings: {
-                                          hotel: hotelId,
-                                          rooms: rooms[0],
-                                          checkInDate: newDates[0],
-                                          checkOutDate: newDates[newDates.length - 1],
-                                          totalPrice: price,
+                     const user = await Bookings.findOne({ userId: userId })
+                     if(user){
+                            await Bookings.updateOne({ userId: userId }, {
+                                   $addToSet: {
+                                          bookings: {
+                                                 hotel: hotelId,
+                                                 hotelName:hotel.name,
+                                                 rooms: rooms[0],
+                                                 checkInDate: newDates[0],
+                                                 checkOutDate: newDates[newDates.length - 1],
+                                                 totalPrice: price,
+                                                 bookedNumbers:roomNumbers[0]
+                                          }
                                    }
-                            }
-                     },{upsert:true})
+                            })
+       
+                     }else{
+                            await Bookings.create({
+                                   userId:userId,
+                                   bookings:[
+                                          {
+                                                 hotel:hotelId,
+                                                 hotelName:hotel.name,
+                                                 rooms:rooms[0],
+                                                 checkInDate: newDates[0],
+                                                 checkOutDate: newDates[newDates.length - 1],
+                                                 totalPrice: price,
+                                                 bookedNumbers:roomNumbers[0]
 
+                                          }
+                                   ]
+                            })
+                     }
+                    
                      const data = await Bookings.findOne({ userId: userId })
                      const lastBookingId = data.bookings[data.bookings.length-1]._id
                         
@@ -210,6 +235,33 @@ const  getAllBookings  = async (req,res,next) =>{
               }
 }
 
+
+
+// async function findDetails(hotelId, rooms) {
+//        try {
+//          const hotel = await Hotels.findById(hotelId);
+//          let roomsDetails = [];
+             
+//          // Use Promise.all() to handle multiple asynchronous operations
+//          await Promise.all(
+//            rooms[0].map(async (room) => {
+//              const data = await Room.findOne({_id:room});
+//               console.log(data);
+//        //       roomsDetails.push({roomName:data.title,
+//        //                             roomPrice:data.price,
+//        //                             maxPeople:data.maxPeople
+//        //                      })
+//            })
+//          );
+     
+//          // Return the details once all asynchronous operations are completed
+//          return {hotel,roomsDetails};
+//        } catch (error) {
+//          console.error('Error finding details:', error);
+//          throw error; // Propagate the error if necessary
+//        }
+//      }
+     
 
 
 module.exports = {

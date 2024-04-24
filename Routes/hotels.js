@@ -19,7 +19,7 @@ const multer  = require('multer')
 
 const storage = multer.diskStorage({
        destination:function(req,file,cb){
-              cb(null,'uploads/')
+              cb(null,'../RoomBooking/src/images')
        }, 
        filename:function (req,file,cb){
               const uniqueSuffix = Date.now()
@@ -33,7 +33,7 @@ const upload = multer({storage:storage})
 
 
 //create hotel
-router.post('/',upload.single('image'),createHotel)
+router.post('/',upload.array('images'),createHotel)
 
 //update hotel
 router.put('/find/:id',updatedHotel)

@@ -9,19 +9,30 @@ const { createError } = require('../utils/error.js')
 
 //create hotel function
 const createHotel = async(req,res,next) =>{
-     //  const {hotelData,image}  = req.body
-       console.log(req.body);
-       const imageName  = req.file.filename 
+
+     //  const images = req.files;
+     console.log(req.files);
+       const images = req.files.map(file => file.filename);
+       const data  = {
+              name:req.body.name,
+              type:req.body.type,
+              city:req.body.city,
+              address:req.body.address,
+              distance:req.body.distance,
+              description:req.body.description,
+              cheapestPrice:req.body.cheapestPrice, 
+              images:images
+       }
+
+    try {
 
 
-       try {
 
-
-              
-            //await Hotels.create(hotelData)  
+            await Hotels.create(data)  
             res.status(200).json({message:"success"})
        } catch (error) {
-              next(createError(401,'Creation Failed'))
+              console.log(error);
+              // next(createError(401,'Creation Failed'))
        }
 
 }

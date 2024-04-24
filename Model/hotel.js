@@ -46,7 +46,12 @@ const hotelSchema = new mongoose.Schema({
        featured:{
               type:Boolean,
               default:false
-       },    
+       },
+       images:[
+              {
+                     type:String  
+              }
+       ]    
        
 },
 {timestamps:true}

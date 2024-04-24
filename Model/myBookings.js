@@ -15,6 +15,9 @@ const bookingsSchema = new mongoose.Schema({
                 ref: 'hotel',
                 required: true
             },
+            hotelName: {
+                type:String ,
+            },
             rooms: [
                 {
                     type: String,
@@ -37,6 +40,10 @@ const bookingsSchema = new mongoose.Schema({
                 type: String,
                 default: 'Processing'
             },
+            bookedNumbers: {
+                type: [Number], // Define the type as an array of numbers
+                default: [] // Default value is an empty array
+            }
         }
     ]
 }, { timestamps: true })
