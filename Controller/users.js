@@ -61,7 +61,7 @@ const deleteUser = async (req,res,next)=>{
 
 const createOrder = async (req, res, next) => {
 
-       const { hotelId, hotelName, userId, rooms, price, dates , roomNumbers } = req.body
+       const { hotelId, hotelName, userId, rooms, price, dates , roomNumbers,images } = req.body
        console.log(roomNumbers);
        const hotel = await Hotels.findById(hotelId);
 
@@ -102,7 +102,8 @@ const createOrder = async (req, res, next) => {
                                                  checkInDate: newDates[0],
                                                  checkOutDate: newDates[newDates.length - 1],
                                                  totalPrice: price,
-                                                 bookedNumbers:roomNumbers[0]
+                                                 bookedNumbers:roomNumbers[0],
+                                                 images:images[0]
                                           }
                                    }
                             })

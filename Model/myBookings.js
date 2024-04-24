@@ -18,6 +18,11 @@ const bookingsSchema = new mongoose.Schema({
             hotelName: {
                 type:String ,
             },
+            images:[
+                {
+                       type:String  
+                }
+            ],
             rooms: [
                 {
                     type: String,
