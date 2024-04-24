@@ -13,8 +13,27 @@ const {createHotel,
 }  = require('../Controller/hotels.js')
 
 
+
+
+const multer  = require('multer')
+
+const storage = multer.diskStorage({
+       destination:function(req,file,cb){
+              cb(null,'uploads/')
+       }, 
+       filename:function (req,file,cb){
+              const uniqueSuffix = Date.now()
+              cb(null,uniqueSuffix+file.originalname)
+       }
+})
+
+const upload = multer({storage:storage})
+
+
+
+
 //create hotel
-router.post('/',createHotel)
+router.post('/',upload.single('image'),createHotel)
 
 //update hotel
 router.put('/find/:id',updatedHotel)

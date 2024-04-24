@@ -5,7 +5,8 @@ const { getSingleUser,
        updateUser,
        deleteUser,
        createOrder,
-       verifyPayment
+       verifyPayment,
+       getAllBookings
         } = require('../Controller/users.js')
 
 
@@ -23,5 +24,6 @@ router.post('/createOrder',createOrder)
 
 router.post('/verifyPayment',verifyPayment) 
 
+router.get('/getAllBookings/:userId',getAllBookings) 
 
 module.exports  = router

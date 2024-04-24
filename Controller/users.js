@@ -149,9 +149,9 @@ const createOrder = async (req, res, next) => {
 
 }
 
-
+//verify payment
 const verifyPayment = (req, res, next) => {
-       const { response, bookingId } = req.body
+       const { response, bookingId ,userId} = req.body
        
        const payment_id = response.razorpay_payment_id;
        const order_id = response.razorpay_order_id
@@ -166,7 +166,8 @@ const verifyPayment = (req, res, next) => {
 
               if(digest == signature){
                      console.log("payment successs");
-                     PaymentStatus(bookingId) 
+                     PaymentStatus(bookingId,userId) 
+                     res.status(200).json({message:'order placed'})
               }
 
        } catch (error) {
@@ -177,11 +178,37 @@ const verifyPayment = (req, res, next) => {
 }
 
 
-function PaymentStatus(){
 
+//set payment status to each new bookings
+async function PaymentStatus(bookingId,userId){
+       try {
+              const result = await Bookings.updateOne(
+                  
+                  { userId: userId, "bookings._id": new mongoose.Types.ObjectId(bookingId) },
+                  
+                  { $set: { "bookings.$.status": "Payment Success" } }
+              );
+          } catch (error) {
+              console.log(error);
+          }
 }
 
 
+
+const  getAllBookings  = async (req,res,next) =>{
+
+              try {
+                     const data = await Bookings.findOne({userId:req.params.userId})
+                     if(!data){
+                            next(createError(401,'No Bookings yet'))
+                     }
+                     return res.status(200).json(data)
+
+              } catch (error) {
+                            next(createError(401,'Failed to get Bookings'))
+ 
+              }
+}
 
 
 
@@ -190,7 +217,8 @@ module.exports = {
        updateUser,
        deleteUser,
        createOrder,
-       verifyPayment
+       verifyPayment,
+       getAllBookings
        
       
 }

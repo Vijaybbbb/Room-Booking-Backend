@@ -3,11 +3,22 @@ const Room = require('../Model/room.js')
 
 const { createError } = require('../utils/error.js')
 
+
+
+
+
 //create hotel function
 const createHotel = async(req,res,next) =>{
-       const newHotel  = req.body
+     //  const {hotelData,image}  = req.body
+       console.log(req.body);
+       const imageName  = req.file.filename 
+
+
        try {
-            await Hotels.create(newHotel)  
+
+
+              
+            //await Hotels.create(hotelData)  
             res.status(200).json({message:"success"})
        } catch (error) {
               next(createError(401,'Creation Failed'))
