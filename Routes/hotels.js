@@ -44,7 +44,7 @@ router.delete('/find/:id',deleteHotel)
 //get all hotels 
 router.get('/',getAllHotels)
 
-//get all featured hotels 
+//get all featured hotels   
 router.get('/featured',getAllFeaturedHotels)
 
 //get hotel by filtering

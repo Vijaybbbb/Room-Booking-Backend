@@ -7,10 +7,20 @@ const Bookings = require('../Model/myBookings.js');
 const  createRoom  = async (req,res,next) =>{
 
        const hotelId = req.params.id;
-       const newRoom  = new Room(req.body)
+       const updatedObject = {
+              ...req.body, 
+              roomNumbers: {
+                     number:Number(req.body.roomNumbers),
+                     unavailableDates:[]
+              }
+            };
+    
+
+
+       const newRoom  = new Room(updatedObject)
+     
        try{
               const savedRoom = await newRoom.save()
-              console.log(savedRoom);
               try {
                      await Hotels.findByIdAndUpdate(hotelId ,
                             {$push : {rooms:savedRoom._id}})

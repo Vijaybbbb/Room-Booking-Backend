@@ -209,13 +209,14 @@ const verifyPayment = (req, res, next) => {
 
 //set payment status to each new bookings
 async function PaymentStatus(bookingId,userId){
-       try {
+
+
+          try {
               const result = await Bookings.updateOne(
-                  
-                  { userId: userId, "bookings._id": new mongoose.Types.ObjectId(bookingId) },
-                  
+                  { userId: userId, "bookings._id": bookingId},
                   { $set: { "bookings.$.status": "Payment Success" } }
               );
+              console.log(result);
           } catch (error) {
               console.log(error);
           }
