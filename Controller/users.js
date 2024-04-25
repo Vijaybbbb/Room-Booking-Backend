@@ -103,7 +103,8 @@ const createOrder = async (req, res, next) => {
                                                  checkOutDate: newDates[newDates.length - 1],
                                                  totalPrice: price,
                                                  bookedNumbers:roomNumbers[0],
-                                                 images:images[0]
+                                                 images:images[0],
+                                                 allDates:newDates
                                           }
                                    }
                             })
@@ -119,7 +120,8 @@ const createOrder = async (req, res, next) => {
                                                  checkInDate: newDates[0],
                                                  checkOutDate: newDates[newDates.length - 1],
                                                  totalPrice: price,
-                                                 bookedNumbers:roomNumbers[0]
+                                                 bookedNumbers:roomNumbers[0],
+                                                 allDates:newDates
 
                                           }
                                    ]
@@ -238,22 +240,47 @@ const  getAllBookings  = async (req,res,next) =>{
 
 
 const  cancelOrder  = async (req,res,next) =>{
-       const {orderId,userId} = req.body
+       const {orderId,userId,rooms,hotelId,allDates} = req.body
+
+       let timestampsToRemove = [] 
+       const timestamps = allDates.map(dateString => {
+              const timestamp = new Date(dateString).getTime();
+              timestampsToRemove.push(timestamp)
+            });
+       
        try {
-              await Bookings.updateOne(
-                     // Filter criteria
-                     { 
-                       userId:userId , 
-                       "bookings._id":orderId
-                     },
-                     // Update operation
-                     { 
-                       $set: { "bookings.$.status": "Canceled" } 
+              //cancel rooom from booking
+              const result = await Bookings.bulkWrite([
+                     {
+                       updateOne: {
+                         filter: {
+                           userId: new mongoose.Types.ObjectId(userId),
+                           "bookings._id":new mongoose.Types.ObjectId(orderId)
+                         },
+                         update: {
+                           $set: {
+                             "bookings.$.status": "Canceled"
+                           }
+                         }
+                       }
                      }
-                   )
+                   ]);
+              
+                   await Promise.all(rooms.map(async (room) => {
+                     const result = await Room.updateOne(
+                       { "roomNumbers._id": room }, // Match the room with the given roomId
+                       { $pull: { "roomNumbers.$.unavailableDates": { $in: timestampsToRemove } } } // Pull timestampsToRemove from unavailableDates array
+                     );
+                     console.log(`Room ${room} updated`);
+                   }));
+              
+
+
+                   
                    return res.status(200).json('success')
                    
        } catch (error) {
+                    console.log(error);
                      next(createError(401,'Failed to cancel order'))
 
        }

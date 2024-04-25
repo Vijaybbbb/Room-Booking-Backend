@@ -48,6 +48,10 @@ const bookingsSchema = new mongoose.Schema({
             bookedNumbers: {
                 type: [Number], // Define the type as an array of numbers
                 default: [] // Default value is an empty array
+            },
+            allDates: {
+                type: [String], // Define the type as an array of numbers
+                default: [] // Default value is an empty array
             }
         }
     ]

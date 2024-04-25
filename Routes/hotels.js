@@ -9,7 +9,8 @@ const {createHotel,
        getAllFeaturedHotels,
        getHotelsByFilter,
        getSingleHotel,
-       getHotelRooms
+       getHotelRooms,
+       deleteHotel
 }  = require('../Controller/hotels.js')
 
 
@@ -37,6 +38,8 @@ router.post('/',upload.array('images'),createHotel)
 
 //update hotel
 router.put('/find/:id',updatedHotel)
+
+router.delete('/find/:id',deleteHotel)
 
 //get all hotels 
 router.get('/',getAllHotels)

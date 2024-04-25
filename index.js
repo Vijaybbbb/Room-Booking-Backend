@@ -67,6 +67,6 @@ app.post('/clearCookie', (req, res) => {
 
 
 
-app.get('/',(req,res)=>{
+app.get('/',verifyTocken,(req,res)=>{
       res.status(200).json({message:'success'})
 }).listen(3000)

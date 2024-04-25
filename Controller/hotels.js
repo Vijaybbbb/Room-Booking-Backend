@@ -10,8 +10,6 @@ const { createError } = require('../utils/error.js')
 //create hotel function
 const createHotel = async(req,res,next) =>{
 
-     //  const images = req.files;
-     console.log(req.files);
        const images = req.files.map(file => file.filename);
        const data  = {
               name:req.body.name,
@@ -32,7 +30,7 @@ const createHotel = async(req,res,next) =>{
             res.status(200).json({message:"success"})
        } catch (error) {
               console.log(error);
-              // next(createError(401,'Creation Failed'))
+              next(createError(401,'Creation Failed'))
        }
 
 }
@@ -63,11 +61,12 @@ const deleteHotel = async (req,res,next) =>{
 
 //get all  hotels list
 const getAllHotels = async (req,res,next) =>{
-       const  {min,max,city}  = req.query 
+       const  {min,max,city}  = req.query
        try {
               const hotels = await Hotels.find({
                      city: { $regex: new RegExp(city, "i") },
-                     cheapestPrice:{$gt:min || 1,$lt:max || 999}})
+                     cheapestPrice:{$gt:min || 1,$lt:max || 20000}})
+             // const hotels = await Hotels.find()
               res.json(hotels)
        } catch (error) {
               next(createError(200,'Failed to get all hotels'))
