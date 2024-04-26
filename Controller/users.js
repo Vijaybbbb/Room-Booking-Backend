@@ -7,6 +7,8 @@ const {RAZORPAY_ID_KEY,RAZORPAY_SECRET_KEY} = process.env
 const crypto = require('crypto')
 const Hotels = require("../Model/hotel")
 const Room = require("../Model/room")
+const UserDetails = require("../Model/userDetails")
+const Coupen = require("../Model/coupen")
 
 const getSingleUser = async (req,res,next)=>{
        try {          
@@ -27,15 +29,14 @@ const updateUser = async (req,res,next)=>{
        const {username,email} = req.body
        try {          
               
-              const user = await User.findByIdAndUpdate(req.query.id,{
+              const user = await User.findByIdAndUpdate(new mongoose.Types.ObjectId(req.query.id),{
                      $set:{username:username,email:email}  
               })
-              if(user){
-                     next(createError(401,'User not found'))
-              }
               
+            
               return res.status(200).json(user)
               } catch (err) {
+                     console.log(err);
                      next(createError(401,'Failed to get User'))
                      
                }
@@ -60,9 +61,13 @@ const deleteUser = async (req,res,next)=>{
 }
 
 const createOrder = async (req, res, next) => {
-
-       const { hotelId, hotelName, userId, rooms, price, dates , roomNumbers,images } = req.body
-       console.log(roomNumbers);
+       let {checkoutDetails,priceAfterCoupen} =  req.body
+       if (priceAfterCoupen) {
+              // Create a new object with the updated price
+              checkoutDetails = { ...checkoutDetails, price: priceAfterCoupen };
+        } 
+        const { hotelId, hotelName, userId, rooms, price, dates , roomNumbers,images } = checkoutDetails 
+       
        const hotel = await Hotels.findById(hotelId);
 
        try {
@@ -134,6 +139,7 @@ const createOrder = async (req, res, next) => {
 
                      try {
                             const amount = price * 100
+                            console.log(amount);
                             const options = {
                                    amount: amount,
                                    currency: 'INR',
@@ -195,7 +201,7 @@ const verifyPayment = (req, res, next) => {
               if(digest == signature){
                      console.log("payment successs");
                      PaymentStatus(bookingId,userId) 
-                     res.status(200).json({message:'order placed'})
+                     res.status(200).json({message:'order placed',response:response})
               }
 
        } catch (error) {
@@ -315,6 +321,116 @@ const  cancelOrder  = async (req,res,next) =>{
      
 
 
+
+const  updateUserDetails  = async (req,res,next) =>{
+       console.log(req.file);
+       const details = req.body
+       
+       const userId = new mongoose.Types.ObjectId(req.params.id)
+       try {
+              const data = await UserDetails.findOne({userId: req.params.id})
+              if(!data){
+                     await UserDetails.create({
+                            userId:userId,
+                            username:details.username ,
+                            firstname:details.firstname, 
+                            lastname:details.lastname, 
+                            state:details.state, 
+                            location:details.location, 
+                            email:details.email , 
+                            phone:details.phone, 
+                            pincode:details.pincode,
+                            profileImg:req.file.filename  
+                     })
+              }
+              else{
+                     await UserDetails.updateOne({userId:req.params.id},{
+                            $set:{
+                                  username:details.username  ,
+                                  firstname:details.firstname, 
+                                  lastname:details.lastname, 
+                                  state:details.state, 
+                                  location:details.location, 
+                                  email:details.email ,  
+                                  phone:details.phone, 
+                                  pincode:details.pincode,
+                                  profileImg:req.file.filename   
+                            }
+                     })
+              }
+              return res.status(200).json('success')
+
+       } catch (error) {
+              console.log(error);
+                     next(createError(401,'Failed to update details'))
+
+       }
+}
+
+const  singleUserDetails  = async (req,res,next) =>{
+
+       try {
+              const data = await UserDetails.findOne({userId:req.params.id})
+              if(!data){
+                     next(createError(401,'No Bookings yet'))
+              }
+              return res.status(200).json(data)
+
+       } catch (error) {
+                     next(createError(401,'Failed to get Bookings'))
+
+       }
+}
+
+const  checkCoupenValid  = async (req,res,next) =>{
+      
+       const {coupenCode,price} = req.body
+       const user =await User.findOne({_id:req.params.id})
+    
+       try {
+              const coupenFind  = await Coupen.findOne({code:coupenCode})
+             
+              if(!coupenFind){
+                     next(createError(401,'No Coupen Found'))
+              }
+              else{
+                     const coupenUsed = user.claimedCoupens.some(code=>code ==coupenCode )       
+              
+                    if(coupenUsed){
+                         next(createError(401,`Coupen Already Redeemed`))
+                    }
+                    else{
+                     if(price < coupenFind.minOrder){
+                            next(createError(401,`Applicable only for orders above ${coupenFind.minOrder}`))
+                     }
+                     if(coupenFind.discountType == 'percentage'){
+                            await User.findByIdAndUpdate(req.params.id,{
+                                   $push:{
+                                          claimedCoupens:coupenFind.code
+                                   }
+                            })
+                            const finalPrice = price -  (price * coupenFind.discountValue / 100);
+                            return res.status(200).json({message:'coupen Applied',finalPrice:finalPrice});
+                     }
+                     else{
+                            const finalPrice = price - coupenFind.discountValue;
+                            return res.status(200).json({message:'coupen Applied',finalPrice:finalPrice});
+
+                     }
+                    }
+              }
+            
+              
+
+       } catch (error) {
+                     console.log(error);
+                     next(createError(401,'Failed to get Bookings'))
+
+       }
+}
+
+
+
 module.exports = {
        getSingleUser,
        updateUser,
@@ -322,7 +438,10 @@ module.exports = {
        createOrder,
        verifyPayment,
        getAllBookings,
-       cancelOrder
+       cancelOrder,
+       updateUserDetails,
+       singleUserDetails,
+       checkCoupenValid
        
       
 }

@@ -20,7 +20,12 @@ const userSchema = new mongoose.Schema({
     otpVerified: {
         type: Boolean,
         default: false
-    }
+    },
+    claimedCoupens:[
+        {
+            type: String,
+        }
+    ]
 }, { timestamps: true });
 
 const User = mongoose.model('user', userSchema);

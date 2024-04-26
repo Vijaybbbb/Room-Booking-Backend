@@ -1,5 +1,6 @@
 const User = require("../Model/user");
 const Hotels = require("../Model/hotel");
+const Coupen = require("../Model/coupen");
 
 
 const { createError } = require("../utils/error");
@@ -93,12 +94,23 @@ const createNewUser  = async (req,res,next)=>{
 
 
 
+const createNewCoupen  = async (req,res,next)=>{
+     
+       try {
+           await Coupen.create(req.body)
+           res.status(200).json({ message: 'Coupen created successfully' });
 
+       } catch (error) {
+              console.log(error);
+              next(createError(401,'Failed to create Coupen'))  
+       }
+}
 
 module.exports = {
        adminLogin,
        adminHome,
        getAllUsers,
        getAllHotels,
-       createNewUser
+       createNewUser,
+       createNewCoupen
 }
