@@ -8,7 +8,8 @@ const { adminLogin,
         getAllUsers,
         getAllHotels,
         createNewUser, 
-        createNewCoupen} = require('../Controller/admin')
+        createNewCoupen,
+        getAllBookings} = require('../Controller/admin')
 const { verifyTocken } = require('../utils/verifyTocken')
 
 
@@ -28,5 +29,6 @@ router.post('/createUser',createNewUser)
 
 router.post('/createCoupen',createNewCoupen)
 
+router.get('/allBookings',getAllBookings)
 
 module.exports  = router

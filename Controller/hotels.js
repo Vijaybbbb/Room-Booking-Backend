@@ -126,11 +126,11 @@ const countByCity = async (req,res,next) =>{
 const countByType = async (req,res,next) =>{
 
        try {
-              const hotelCount  = await Hotels.countDocuments({type:'hotel'})
-              const apartmentsCount  =await Hotels.countDocuments({type:'apartment'})
-              const resortCount  =await Hotels.countDocuments({type:'resort'})
-              const villaCount  =await Hotels.countDocuments({type:'villa'})
-              const cabinCount  =await Hotels.countDocuments({type:'cabin'})
+              const hotelCount  = await Hotels.countDocuments({type:'Hotel'})
+              const apartmentsCount  =await Hotels.countDocuments({type:'Apartment'})
+              const resortCount  =await Hotels.countDocuments({type:'Resort'})
+              const villaCount  =await Hotels.countDocuments({type:'Villa'})
+              const cabinCount  =await Hotels.countDocuments({type:'Cabin'})
               res.status(200).json([
                      {type:"hotel",count:hotelCount},
                      {type:"apartment",count:apartmentsCount},
