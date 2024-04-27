@@ -60,18 +60,48 @@ const deleteHotel = async (req,res,next) =>{
 }
 
 //get all  hotels list
+// const getAllHotels = async (req,res,next) =>{
+//        const  {min,max,city}  = req.query
+//        try {
+//               const hotels = await Hotels.find({
+//                      city: { $regex: new RegExp(city, "i") },
+//                      cheapestPrice:{$gt:min || 1,$lt:max || 20000}})
+//              // const hotels = await Hotels.find()
+//               res.json(hotels)
+//        } catch (error) {
+//               next(createError(200,'Failed to get all hotels'))
+//        }
+// }
+
+
 const getAllHotels = async (req,res,next) =>{
-       const  {min,max,city}  = req.query
+       const  {min,max,city,type}  = req.query
+        
        try {
+            if(type == ''){
               const hotels = await Hotels.find({
                      city: { $regex: new RegExp(city, "i") },
                      cheapestPrice:{$gt:min || 1,$lt:max || 20000}})
-             // const hotels = await Hotels.find()
-              res.json(hotels)
+                     res.json(hotels)
+            }
+            else{
+              const hotels = await Hotels.find({
+                     city: { $regex: new RegExp(city, "i") },
+                     type:type,
+                     cheapestPrice:{$gt:min || 1,$lt:max || 20000}})
+                     res.json(hotels)
+            }
+           
+             
        } catch (error) {
               next(createError(200,'Failed to get all hotels'))
        }
 }
+
+
+
+
+
 
 //get all  featured hotels
 const getAllFeaturedHotels = async (req,res,next) =>{
@@ -132,11 +162,11 @@ const countByType = async (req,res,next) =>{
               const villaCount  =await Hotels.countDocuments({type:'Villa'})
               const cabinCount  =await Hotels.countDocuments({type:'Cabin'})
               res.status(200).json([
-                     {type:"hotel",count:hotelCount},
-                     {type:"apartment",count:apartmentsCount},
-                     {type:"resort",count:resortCount},
-                     {type:"villa",count:villaCount},
-                     {type:"cabin",count:cabinCount},
+                     {type:"Hotel",count:hotelCount},
+                     {type:"Apartment",count:apartmentsCount},
+                     {type:"Resort",count:resortCount},
+                     {type:"Villa",count:villaCount},
+                     {type:"Cabin",count:cabinCount},
 
               ])
               
