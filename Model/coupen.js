@@ -29,7 +29,7 @@ const couponSchema = new mongoose.Schema({
   },
   active: {
     type: Boolean,
-    default: true // Whether the coupon is currently active or not
+    default: true // Whether the coupon is currently active or not 
   },
   minOrder: {
     type: Number,
@@ -37,6 +37,6 @@ const couponSchema = new mongoose.Schema({
   }
 });
 
-const Coupon = mongoose.model('Coupon', couponSchema);
+const Coupon = mongoose.model('Coupon', couponSchema); 
 
 module.exports = Coupon;

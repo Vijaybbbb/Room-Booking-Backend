@@ -6,7 +6,8 @@ const Bookings = require("../Model/myBookings");
 
 const { createError } = require("../utils/error");
 const bcrypt = require('bcrypt')
-const jwt  = require('jsonwebtoken')
+const jwt  = require('jsonwebtoken');
+const { default: mongoose } = require("mongoose");
 
 const adminLogin = async (req,res,next) =>{
        try {
@@ -111,6 +112,68 @@ const getAllBookings  = async (req,res,next)=>{
      
        try {
          const result =  await Bookings.find()
+          let list = [] 
+         result.map((userObj)=>{
+              userObj.bookings.map((bookings)=>{
+                     list.push({user:userObj.userId,
+                               bookingId:bookings._id,
+                               status:bookings.status,
+                               price:bookings.totalPrice,
+                               bookedNumbers:bookings.bookedNumbers,
+                               allDates:bookings.allDates,
+                               hotelName:bookings.hotelName,
+                               hotel:bookings.hotel
+                            })   
+              })
+         })
+
+         res.status(200).json(list);
+
+       } catch (error) {
+              console.log(error);
+              next(createError(401,'Failed to create Coupen'))  
+       }
+}
+
+const getAllCoupens  = async (req,res,next)=>{
+     
+       try {
+         const result =  await Coupen.find()
+     
+         res.status(200).json(result);
+
+       } catch (error) {
+              console.log(error);
+              next(createError(401,'Failed to create Coupen'))  
+       }
+}
+
+const getSingleCoupen  = async (req,res,next)=>{
+     
+       try {
+         const result =  await Coupen.findById(req.params.id)
+     
+         res.status(200).json(result);
+
+       } catch (error) {
+              console.log(error);
+              next(createError(401,'Failed to create Coupen'))  
+       }
+}
+
+const updateCoupen  = async (req,res,next)=>{
+     const coupenData = req.body
+     console.log(coupenData);
+       try {
+              const id  = new mongoose.Types.ObjectId(req.params.id)
+              const result =  await Coupen.findByIdAndUpdate(id,{
+              $set:{
+                    code: coupenData.code,
+                    discountType: coupenData.discountType,
+                    discountValue: coupenData.discountValue,
+                    minOrder: coupenData.minOrder,   
+              }
+         })
      
          res.status(200).json(result);
 
@@ -121,7 +184,6 @@ const getAllBookings  = async (req,res,next)=>{
 }
 
 
-
 module.exports = {
        adminLogin,
        adminHome,
@@ -129,5 +191,8 @@ module.exports = {
        getAllHotels,
        createNewUser,
        createNewCoupen,
-       getAllBookings
+       getAllBookings,
+       getAllCoupens,
+       getSingleCoupen,
+       updateCoupen
 }
