@@ -9,6 +9,9 @@ const Hotels = require("../Model/hotel")
 const Room = require("../Model/room")
 const UserDetails = require("../Model/userDetails")
 const Coupen = require("../Model/coupen")
+const { log } = require("console")
+const easyinvoice = require('easyinvoice');
+
 
 const getSingleUser = async (req,res,next)=>{
        try {          
@@ -431,6 +434,110 @@ const  checkCoupenValid  = async (req,res,next) =>{
 
 
 
+
+const generateInvoiceHandler = async (req, res, next) => {
+       try {
+           console.log("entered the invoice handler");
+   
+           const orderId = req.body.orderId;
+           const userId = req.params.id;
+           const user = await User.findById(userId)
+             
+           if (!orderId) {
+               return res.status(400).json({ message: 'Missing orderId in the request body' });
+           }
+           const pipeline = [
+              // Match documents where the userId matches
+              { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+              // Unwind the bookings array
+              { $unwind: "$bookings" },
+              // Match documents where the orderId matches
+              { $match: { "bookings._id": new mongoose.Types.ObjectId(orderId) } },
+              // Project to reshape the document to its original structure 
+              { 
+                $project: { 
+                  _id: 0,
+                  userId: 1,
+                  bookings: 1
+                } 
+              }
+            ];
+        
+            const order = await Bookings.aggregate(pipeline)
+       ;
+   
+       //     if (!order) {
+       //         return res.status(400).json({ message: 'Missing orderId in the request body' });
+       //     }
+   
+       //     if (order.deliveredDate && order.status === "Delivered") {
+       //         deliveredDate = new Date(order.deliveredDate);
+       //         currentDate = new Date();
+       //         daysDifference = Math.abs(deliveredDate - currentDate) / (1000 * 60 * 60 * 24);
+       //     }
+   
+       //     if (daysDifference <= 10) {
+       //         return res.status(400).json({ message: 'Order is not valid for invoice generation yet.' });
+       //     }
+   
+       //     const formatDate = (date) => {
+       //         const year = date.getFullYear();
+       //         const month = String(date.getMonth() + 1).padStart(2, '0');
+       //         const day = String(date.getDate()).padStart(2, '0');
+              
+       //     };
+   console.log(order);
+       const data = {
+              sender: {
+                  company: 'Get Your Room Pvt LTD',
+                  address: 'Banglore,india',
+                  zip: 'GFRFY5636',
+                  city: 'Banglore',
+                  country: 'india'
+              },
+              client: {
+                  company: user.username, // Client's company name
+                  city: 'Payment Success', // City might represent the status in this context
+                  state:  order[0].bookings.totalPrice, // State might represent the total price in this context
+              },
+              images: {}, // You can add images here if necessary
+              information: {
+                  date:`${order[0].bookings.checkInDate} to ${order[0].bookings.checkOutDate}`
+
+              }, // Additional information can be added here
+              products: [
+                  {
+                      description: order[0].bookings.hotelName, // Description of the product or service
+                      quantity: order[0].bookings.rooms.length, // Assuming one booking
+                      price:  order[0].bookings.totalPrice// Total price of the booking
+                  }
+              ],
+              settings: {
+                  currency: 'INR' // Currency for the invoice
+              }
+          };
+          
+
+         
+   
+           // Create your invoice! Easy!
+           easyinvoice.createInvoice(data, function (result) {
+               console.log("invoice created");
+               // The response will contain a base64 encoded PDF file
+               const pdfBase64 = result.pdf;
+   
+               // Send the PDF as a response
+               res.setHeader('Content-Type', 'application/pdf');
+               res.setHeader('Content-Disposition', 'attachment; filename=invoice.pdf');
+               res.send(Buffer.from(pdfBase64, 'base64'));
+           });
+   
+       } catch (error) {
+           console.error(error);
+         
+       }
+   };
+
 module.exports = {
        getSingleUser,
        updateUser,
@@ -441,7 +548,8 @@ module.exports = {
        cancelOrder,
        updateUserDetails,
        singleUserDetails,
-       checkCoupenValid
+       checkCoupenValid,
+       generateInvoiceHandler
        
       
 }

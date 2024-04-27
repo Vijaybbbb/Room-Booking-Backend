@@ -10,7 +10,8 @@ const { getSingleUser,
        cancelOrder,
        updateUserDetails,
        singleUserDetails,
-       checkCoupenValid
+       checkCoupenValid,
+       generateInvoiceHandler
 } = require('../Controller/users.js')
 
 
@@ -54,5 +55,7 @@ router.post('/updateUserDetails/:id',upload.single('image'),updateUserDetails)
 router.get('/singleUserDetails/:id',singleUserDetails) 
 
 router.post('/checkCoupenValid/:id',checkCoupenValid) 
+
+router.post('/generateInvoiceHandler/:id',generateInvoiceHandler) 
 
 module.exports  = router
