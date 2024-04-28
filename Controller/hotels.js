@@ -141,6 +141,7 @@ const getSingleHotel = async(req,res,next) =>{
 
 //get hotel by city
 const countByCity = async (req,res,next) =>{
+      // console.log('count');
        const cities = req.query.cities.split(',')
        try {
               const list  = await Promise.all(cities.map(city =>{
@@ -154,7 +155,6 @@ const countByCity = async (req,res,next) =>{
 
 //get hotels by type
 const countByType = async (req,res,next) =>{
-
        try {
               const hotelCount  = await Hotels.countDocuments({type:'Hotel'})
               const apartmentsCount  =await Hotels.countDocuments({type:'Apartment'})

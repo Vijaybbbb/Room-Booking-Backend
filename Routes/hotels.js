@@ -12,12 +12,11 @@ const {createHotel,
        getHotelRooms,
        deleteHotel
 }  = require('../Controller/hotels.js')
-
+const { verifyTocken } = require('../utils/verifyTocken.js')
 
 
 
 const multer  = require('multer')
-
 const storage = multer.diskStorage({
        destination:function(req,file,cb){
               cb(null,'../RoomBooking/src/images')
@@ -59,6 +58,6 @@ router.get('/countByType',countByType)
 //get single hotel
 router.get('/:id',getSingleHotel)
 
-router.get('/room/:id',getHotelRooms)
+router.get('/room/:id',getHotelRooms) 
 
 module.exports  = router

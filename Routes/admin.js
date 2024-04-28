@@ -27,7 +27,7 @@ router.get('/users',getAllUsers)
  
 //get all registered hotels
 router.get('/hotels',getAllHotels)
-
+ 
 router.post('/createUser',createNewUser)
 
 router.post('/createCoupen',createNewCoupen)
