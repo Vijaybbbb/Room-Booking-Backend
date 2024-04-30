@@ -39,7 +39,7 @@ app.use('/admin',adminRouter)
 app.use('/hotels',hotelsRouter)
 app.use('/rooms',roomsRouter)
 
-app.use('/hotels',verifyTocken)
+app.use('/',verifyTocken)
 
 //error handling middleware
 app.use((err,req,res,next)=>{

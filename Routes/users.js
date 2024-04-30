@@ -32,7 +32,7 @@ const upload = multer({ storage: storage })
 
 
 
-router.post('/checkAuthentication',verifyTocken,(req,res)=>{
+router.post('/checkAuthentication',(req,res)=>{
        res.send('users')
 })
 
