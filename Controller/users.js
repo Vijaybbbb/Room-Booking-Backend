@@ -188,10 +188,10 @@ const createOrder = async (req, res, next) => {
 
 //verify payment
 const verifyPayment = (req, res, next) => {
-       const { response, bookingId ,userId} = req.body
-       
+       const { response, bookingId ,userId,coupenCode} = req.body
+      
        const payment_id = response.razorpay_payment_id;
-       const order_id = response.razorpay_order_id
+       const order_id = response.razorpay_order_id   
        const signature = response.razorpay_signature;
 
        try {
@@ -203,7 +203,7 @@ const verifyPayment = (req, res, next) => {
 
               if(digest == signature){
                      console.log("payment successs");
-                     PaymentStatus(bookingId,userId) 
+                     PaymentStatus(bookingId,userId,coupenCode) 
                      res.status(200).json({message:'order placed',response:response})
               }
 
@@ -217,15 +217,23 @@ const verifyPayment = (req, res, next) => {
 
 
 //set payment status to each new bookings
-async function PaymentStatus(bookingId,userId){
+async function PaymentStatus(bookingId,userId,coupenCode){
 
-
+console.log(userId,coupenCode);
           try {
               const result = await Bookings.updateOne(
                   { userId: userId, "bookings._id": bookingId},
                   { $set: { "bookings.$.status": "Payment Success" } }
               );
-              console.log(result);
+              
+              if(coupenCode){
+                     const result1 = await User.findByIdAndUpdate(userId,{
+                            $push:{
+                                   claimedCoupens:coupenCode
+                            }
+                     })
+              }
+                           // console.log(result1);
           } catch (error) {
               console.log(error);
           }
@@ -407,17 +415,13 @@ const  checkCoupenValid  = async (req,res,next) =>{
                             next(createError(401,`Applicable only for orders above ${coupenFind.minOrder}`))
                      }
                      if(coupenFind.discountType == 'percentage'){
-                            await User.findByIdAndUpdate(req.params.id,{
-                                   $push:{
-                                          claimedCoupens:coupenFind.code
-                                   }
-                            })
+                           
                             const finalPrice = price -  (price * coupenFind.discountValue / 100);
-                            return res.status(200).json({message:'coupen Applied',finalPrice:finalPrice});
+                            return res.status(200).json({message:'coupen Applied',finalPrice:finalPrice,code:coupenCode});
                      }
                      else{
                             const finalPrice = price - coupenFind.discountValue;
-                            return res.status(200).json({message:'coupen Applied',finalPrice:finalPrice});
+                            return res.status(200).json({message:'coupen Applied',finalPrice:finalPrice,code:coupenCode});
 
                      }
                     }
