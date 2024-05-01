@@ -1,8 +1,6 @@
 const express = require('express')
-const User = require('../Model/user')
 const router = express.Router()
 const bcrypt = require('bcrypt')
-const jwt  = require('jsonwebtoken')
 const { adminLogin,
         adminHome,
         getAllUsers,
