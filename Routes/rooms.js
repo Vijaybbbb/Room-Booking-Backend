@@ -7,7 +7,6 @@ const {createRoom,
        getSingleRoom,
        getAllRoom
 } = require('../Controller/room')
-const {verifyTocken}  = require('../utils/verifyTocken.js')
 
 //create room
 router.post('/createRoom/:id',createRoom)
