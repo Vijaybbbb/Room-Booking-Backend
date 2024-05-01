@@ -6,7 +6,7 @@ const verifyTocken = async(req,res,next) =>{
        try {
               const tocken = await req.cookies.access_tocken;
               const userId = req.query.userId
-              console.log(userId);
+             // console.log(userId);
 
               if(!tocken || !userId){
                     return next(createError(401,'Invalid Creadentials'))
