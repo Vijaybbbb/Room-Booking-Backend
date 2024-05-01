@@ -12,7 +12,6 @@ const {createHotel,
        getHotelRooms,
        deleteHotel
 }  = require('../Controller/hotels.js')
-const { verifyTocken } = require('../utils/verifyTocken.js')
 
 
 

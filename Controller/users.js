@@ -9,7 +9,6 @@ const Hotels = require("../Model/hotel")
 const Room = require("../Model/room")
 const UserDetails = require("../Model/userDetails")
 const Coupen = require("../Model/coupen")
-const { log } = require("console")
 const easyinvoice = require('easyinvoice');
 
 

@@ -1,6 +1,5 @@
 const express = require('express')
 const router = express.Router()
-const { verifyTocken } = require('../utils/verifyTocken.js')
 const { getSingleUser,
        updateUser,
        deleteUser,
