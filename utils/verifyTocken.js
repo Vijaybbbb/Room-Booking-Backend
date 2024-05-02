@@ -9,9 +9,7 @@ const verifyTocken = async(req,res,next) =>{
 
               const tocken = await req.cookies.access_tocken;
               const userId = req.query.userId
-             // console.log(userId);
-
-             const user = await User.findById(new mongoose.Types.ObjectId(userId))
+              const user = await User.findById(new mongoose.Types.ObjectId(userId))
 
               if(!tocken || !userId){
                     return next(createError(401,'Invalid Creadentials'))
@@ -24,7 +22,7 @@ const verifyTocken = async(req,res,next) =>{
                    
                      if(err){
                             console.log(err);
-                            return next(createError(401,'Invalid Tocken'))       
+                            return next(createError(401,'Invalid Tocken'))         
                      }
                      if(userId == user.id){
                            // console.log("next");
@@ -37,7 +35,7 @@ const verifyTocken = async(req,res,next) =>{
                     
               }) 
        } catch (error) {
-              console.log(error);
+           //   console.log(error);
        }
 
 }
