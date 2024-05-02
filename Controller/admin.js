@@ -172,7 +172,7 @@ const updateCoupen  = async (req,res,next)=>{
                     discountType: coupenData.discountType,
                     discountValue: coupenData.discountValue,
                     minOrder: coupenData.minOrder,   
-              }
+              } 
          })
      
          res.status(200).json(result);
