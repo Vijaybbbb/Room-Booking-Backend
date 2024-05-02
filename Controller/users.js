@@ -45,17 +45,29 @@ const updateUser = async (req,res,next)=>{
 
 }
 
-const deleteUser = async (req,res,next)=>{
+const blockUser = async (req,res,next)=>{
 
-       try {          
-              
-              const user = await User.findByIdAndDelete(req.query.id)
-              if(user){
-                     next(createError(401,'User not found'))
+       try {     
+          
+              if(req.body.blocked){
+                     const user = await User.findByIdAndUpdate(req.query.id,{
+                            $set:{
+                                   isBlocked:false  
+                            }
+                     })
+                     return res.status(200).json(user)   
+                     
               }
-              
+              const user = await User.findByIdAndUpdate(req.query.id,{
+                     $set:{
+                            isBlocked:true  
+                     }
+              })
+
               return res.status(200).json(user)
+             
               } catch (err) {
+                     console.log(err);
                      next(createError(401,'Failed to get User'))
                      
                }
@@ -553,7 +565,7 @@ const generateInvoiceHandler = async (req, res, next) => {
 module.exports = {
        getSingleUser,
        updateUser,
-       deleteUser,
+       blockUser,
        createOrder,
        verifyPayment,
        getAllBookings,

@@ -55,6 +55,9 @@ const login = async(req,res,next) =>{
             if(!user){
                      return next(createError(401,'User Not Found'))
             }
+            if(user.isBlocked == true){
+              return next(createError(401,'User Blocked'))
+            }
             else{
               const checkPassword = await bcrypt.compare(password,user.password)
               if(checkPassword){

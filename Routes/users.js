@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const { getSingleUser,
        updateUser,
-       deleteUser,
        createOrder,
        verifyPayment,
        getAllBookings,
@@ -10,7 +9,8 @@ const { getSingleUser,
        updateUserDetails,
        singleUserDetails,
        checkCoupenValid,
-       generateInvoiceHandler
+       generateInvoiceHandler,
+       blockUser
 } = require('../Controller/users.js')
 
 
@@ -39,7 +39,7 @@ router.get('/singleUser',getSingleUser)
 
 router.put('/updateUser',updateUser)
 
-router.delete('/deleteUser',deleteUser)
+router.post('/blockUser',blockUser)
 
 router.post('/createOrder',createOrder) 
 

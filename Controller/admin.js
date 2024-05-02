@@ -52,7 +52,7 @@ const getAllUsers  = async (req,res,next)=>{
        
        try {
               const users = await User.find({isAdmin:false})
-              return res.status(200).json(users)
+              return res.status(200).json(users.reverse())
 
        } catch (error) {
               next(createError(401,'Failed to get all users'))  
