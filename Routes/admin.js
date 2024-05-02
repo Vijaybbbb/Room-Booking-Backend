@@ -9,7 +9,8 @@ const { adminLogin,
         getAllBookings,
         getAllCoupens,
         getSingleCoupen,
-        updateCoupen} = require('../Controller/admin')
+        updateCoupen,
+        deleteCoupen} = require('../Controller/admin')
 const { verifyTocken } = require('../utils/verifyTocken')
 
 
@@ -36,6 +37,8 @@ router.get('/allCoupens',getAllCoupens)
 router.get('/viewCoupen/:id',getSingleCoupen)
 
 router.post('/updateCoupen/:id',updateCoupen)
+
+router.delete('/deleteCoupen/:id',deleteCoupen)
 
 
 module.exports  = router

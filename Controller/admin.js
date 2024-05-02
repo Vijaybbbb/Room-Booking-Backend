@@ -184,6 +184,20 @@ const updateCoupen  = async (req,res,next)=>{
 }
 
 
+const deleteCoupen  = async (req,res,next)=>{
+     
+       try {
+         const result =  await Coupen.findByIdAndDelete(req.params.id)
+     
+         res.status(200).json(result);
+
+       } catch (error) {
+              console.log(error);
+              next(createError(401,'Failed to delete Coupen'))  
+       }
+}
+
+
 module.exports = {
        adminLogin,
        adminHome,
@@ -194,5 +208,6 @@ module.exports = {
        getAllBookings,
        getAllCoupens,
        getSingleCoupen,
-       updateCoupen
+       updateCoupen,
+       deleteCoupen
 }
