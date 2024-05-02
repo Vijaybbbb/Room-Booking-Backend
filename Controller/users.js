@@ -243,14 +243,23 @@ console.log(userId,coupenCode);
 const  getAllBookings  = async (req,res,next) =>{
 
               try {
+                     let array=[]
                      const data = await Bookings.findOne({userId:req.params.userId})
                      if(!data){
                             next(createError(401,'No Bookings yet'))
                      }
-                     return res.status(200).json(data)
+                    // console.log(data);
+                     data.bookings.map((booking) => {
+                            booking.status !== 'Processing' ? array.push(booking) : ''
+                     }
+                     )
+                    // console.log(array.reverse);
 
+                     return res.status(200).json(array.reverse())
+                     
               } catch (error) {
-                            next(createError(401,'Failed to get Bookings'))
+                     console.log(error);
+                            next(createError(401,'Failed to get Bookings'))      
  
               }
 }
