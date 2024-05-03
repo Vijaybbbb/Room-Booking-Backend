@@ -80,11 +80,7 @@ const deleteRoom  = async (req,res,next) =>{
 const updateRoomAvailability  = async(req,res,next) =>{
        try {
               const dateToAdd  = req.body.dates;
-              const userId  = req.body.userId;
-              const hotelId  = req.body.hotelId;
-              const roomId = req.params.id
-              const price = req.body.price
-
+             
               const dates = dateToAdd?.map(timestamp => {
                      const date = new Date(timestamp);
                      return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -96,23 +92,6 @@ const updateRoomAvailability  = async(req,res,next) =>{
                      }
               })
               
-              const bookingDetails = 
-                     {
-                            hotel:hotelId,
-                            room:roomId,
-                            checkInDate:dates[0],
-                            checkOutDate:dates[dates.length-1],
-                            totalPrice:price
-                     }
-              
-              // Create new booking entry
-              const newBooking = new Bookings({
-                     userId: userId,
-                     bookings: [bookingDetails]
-              });
-
-              // Save the booking
-              await newBooking.save();
            
        } catch (error) {
               console.log(error);

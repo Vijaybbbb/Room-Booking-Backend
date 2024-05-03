@@ -6,7 +6,8 @@ const bookingsSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user',
-        required: true
+        required: true,
+        unique:true
     },
     bookings: [
         {
@@ -55,7 +56,7 @@ const bookingsSchema = new mongoose.Schema({
             }
         }
     ]
-}, { timestamps: true })
+})
 
 const Bookings  = mongoose.model('bookings',bookingsSchema)
 

@@ -75,7 +75,7 @@ const blockUser = async (req, res, next) => {
 }
 
 const createOrder = async (req, res, next) => {
-       //console.log(req.body);
+      
        let { checkoutDetails, priceAfterCoupen } = req.body
        if (priceAfterCoupen) {
               // Create a new object with the updated price
@@ -110,12 +110,12 @@ const createOrder = async (req, res, next) => {
 
 
               try {
+                    
                      // Create new Booking instance
-                     // console.log('user found');
                      const user = await Bookings.findOne({ userId: userId })
                      if (user) {
                             const data = await Bookings.updateOne({ userId: userId }, {
-                                   $push: {
+                                   $addToSet: {
                                           bookings: {
                                                  hotel: hotelId,
                                                  hotelName: hotel.name,
@@ -129,12 +129,11 @@ const createOrder = async (req, res, next) => {
                                           }
                                    }
                             })
-                            // console.log("#######",data);
+                           
 
                      } else {
-                            console.log('user not found');
-
-                            const data = await Bookings.create({
+                           
+                            const data = new Bookings({
                                    userId: userId,
                                    bookings: [
                                           {
@@ -147,25 +146,22 @@ const createOrder = async (req, res, next) => {
                                                  bookedNumbers: roomNumbers[0],
                                                  allDates: newDates
 
+
                                           }
                                    ]
                             })
-                            // console.log(data);
-                            // await Bookings.create({
-                            //        userId:userId,
-                            //        bookings:[
 
-                            //        ]
-                            // })
+                            await data.save()
+                            
                      }
-
+              
                      const data = await Bookings.findOne({ userId: userId })
                      const lastBookingId = data?.bookings[data.bookings.length - 1]?._id
 
 
                      try {
                             const amount = price * 100
-                            console.log(amount);
+                           
                             const options = {
                                    amount: amount,
                                    currency: 'INR',
@@ -210,7 +206,7 @@ const createOrder = async (req, res, next) => {
 }
 
 //verify payment
-const verifyPayment = (req, res, next) => {
+const verifyPayment = async (req, res, next) => {
        const { response, bookingId, userId, coupenCode } = req.body
 
        const payment_id = response.razorpay_payment_id;
@@ -225,13 +221,17 @@ const verifyPayment = (req, res, next) => {
               const digest = hmac.digest('hex');
 
               if (digest == signature) {
-                     console.log("payment successs");
-                     PaymentStatus(bookingId, userId, coupenCode)
+                     console.log("payment successs",);
+
+                     PaymentStatus(bookingId, userId, coupenCode).then((data)=>{
+                          
+                     }).catch(err=>console.log(err))
+
                      res.status(200).json({ message: 'order placed', response: response })
               }
 
        } catch (error) {
-
+              console.log(error);
               next(createError(401, 'Payment Failed'))
        }
 
@@ -242,27 +242,22 @@ const verifyPayment = (req, res, next) => {
 //set payment status to each new bookings
 async function PaymentStatus(bookingId, userId, coupenCode) {
 
-       console.log(userId, coupenCode);
        try {
-
-              // console.log(await Bookings.find());
-
-              // const result = await Bookings.updateOne(
-              //     { userId: userId, "bookings._id": bookingId},
-              //     { $set: { "bookings.$.status": "Payment Success" } }
-              // );
-
-              console.log('after updattion');
-              console.log(await Bookings.find());
-
               if (coupenCode) {
-                     const result1 = await User.findByIdAndUpdate(userId, {
+                     await User.findByIdAndUpdate(userId, {
                             $push: {
                                    claimedCoupens: coupenCode
                             }
                      })
-              }
-              // console.log(result1);
+              
+               }
+              const result = await Bookings.updateOne(
+                     { userId: userId, "bookings._id": bookingId },
+                     { $set: { "bookings.$.status": "Payment Success" } }
+              );
+
+              return result;
+
        } catch (error) {
               console.log(error);
        }
@@ -341,35 +336,6 @@ const cancelOrder = async (req, res, next) => {
 
        }
 }
-
-
-// async function findDetails(hotelId, rooms) {
-//        try {
-//          const hotel = await Hotels.findById(hotelId);
-//          let roomsDetails = [];
-
-//          // Use Promise.all() to handle multiple asynchronous operations
-//          await Promise.all(
-//            rooms[0].map(async (room) => {
-//              const data = await Room.findOne({_id:room});
-//               console.log(data);
-//        //       roomsDetails.push({roomName:data.title,
-//        //                             roomPrice:data.price,
-//        //                             maxPeople:data.maxPeople
-//        //                      })
-//            })
-//          );
-
-//          // Return the details once all asynchronous operations are completed
-//          return {hotel,roomsDetails};
-//        } catch (error) {
-//          console.error('Error finding details:', error);
-//          throw error; // Propagate the error if necessary
-//        }
-//      }
-
-
-
 
 const updateUserDetails = async (req, res, next) => {
        console.log(req.file);
