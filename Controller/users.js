@@ -472,29 +472,11 @@ const generateInvoiceHandler = async (req, res, next) => {
               ];
 
               const order = await Bookings.aggregate(pipeline)
-                     ;
-
-              //     if (!order) {
-              //         return res.status(400).json({ message: 'Missing orderId in the request body' });
-              //     }
-
-              //     if (order.deliveredDate && order.status === "Delivered") {
-              //         deliveredDate = new Date(order.deliveredDate);
-              //         currentDate = new Date();
-              //         daysDifference = Math.abs(deliveredDate - currentDate) / (1000 * 60 * 60 * 24);
-              //     }
-
-              //     if (daysDifference <= 10) {
-              //         return res.status(400).json({ message: 'Order is not valid for invoice generation yet.' });
-              //     }
-
-              //     const formatDate = (date) => {
-              //         const year = date.getFullYear();
-              //         const month = String(date.getMonth() + 1).padStart(2, '0');
-              //         const day = String(date.getDate()).padStart(2, '0');
-
-              //     };
-              console.log(order);
+              const dateObject1 = new Date(order[0].bookings.checkInDate);
+              const dateObject2 = new Date(order[0].bookings.checkOutDate);
+              const formattedDate1 = dateObject1.toISOString().split('T')[0]; 
+              const formattedDate2 = dateObject2.toISOString().split('T')[0];      
+              
               const data = {
                      sender: {
                             company: 'Get Your Room Pvt LTD',
@@ -510,7 +492,7 @@ const generateInvoiceHandler = async (req, res, next) => {
                      },
                      images: {}, // You can add images here if necessary
                      information: {
-                            date: `${order[0].bookings.checkInDate} to ${order[0].bookings.checkOutDate}`
+                            date: `${formattedDate1} to ${formattedDate2}`
 
                      }, // Additional information can be added here
                      products: [
