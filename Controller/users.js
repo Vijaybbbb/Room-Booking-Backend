@@ -322,7 +322,7 @@ const cancelOrder = async (req, res, next) => {
                             { "roomNumbers._id": room }, // Match the room with the given roomId
                             { $pull: { "roomNumbers.$.unavailableDates": { $in: timestampsToRemove } } } // Pull timestampsToRemove from unavailableDates array
                      );
-                     console.log(`Room ${room} updated`);
+                     //console.log(`Room ${room} updated`);
               }));
 
 
