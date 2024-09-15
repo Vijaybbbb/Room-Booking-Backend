@@ -398,7 +398,7 @@ const singleUserDetails = async (req, res, next) => {
 }
 
 const checkCoupenValid = async (req, res, next) => {
-
+      // console.log("((((((((((((()))))))))))))))))))))");
        const { coupenCode, price } = req.body
        const user = await User.findOne({ _id: req.params.id })
 
@@ -487,7 +487,7 @@ const generateInvoiceHandler = async (req, res, next) => {
                      },
                      client: {
                             company: user.username, // Client's company name
-                            city: 'Payment Success', // City might represent the status in this context
+                            city:'Payment Success', // City might represent the status in this context
                             state: order[0].bookings.totalPrice, // State might represent the total price in this context
                      },
                      images: {}, // You can add images here if necessary

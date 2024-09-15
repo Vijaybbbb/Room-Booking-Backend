@@ -10,7 +10,8 @@ const {createHotel,
        getHotelsByFilter,
        getSingleHotel,
        getHotelRooms,
-       deleteHotel
+       deleteHotel,
+       getSingleHotelAllRooms
 }  = require('../Controller/hotels.js')
 
 
@@ -56,6 +57,9 @@ router.get('/countByType',countByType)
 
 //get single hotel
 router.get('/:id',getSingleHotel)
+
+router.get('/getSingleHotelAllRooms/:id',getSingleHotelAllRooms)
+
 
 router.get('/room/:id',getHotelRooms) 
 

@@ -129,6 +129,7 @@ const getHotelsByFilter  = async() =>{
 
 //get single hotel by id
 const getSingleHotel = async(req,res,next) =>{
+       console.log( req.params.id);
        const id  = req.params.id
        try {
               const hotel  = await Hotels.findById(id)
@@ -138,6 +139,31 @@ const getSingleHotel = async(req,res,next) =>{
        }
 }
 
+//get single hotel by id
+const getSingleHotelAllRooms = async (req, res, next) => {
+       const roomDetails = [];
+       const hotelId = req.params.id;
+   
+       try {
+           const hotel = await Hotels.findById(hotelId);
+           
+           if (!hotel) {
+               return next(createError(404, 'Hotel not found'));
+           }
+   
+           if (hotel.rooms.length !== 0) {
+               const roomPromises = hotel.rooms.map(roomId => Room.findById(roomId));
+               const rooms = await Promise.all(roomPromises);
+               return res.status(200).json(rooms);
+           }
+   
+           return res.status(200).json({ message: 'No rooms available' });
+   
+       } catch (error) {
+           next(createError(500, 'Internal server error'));
+       }
+   };
+   
 
 //get hotel by city
 const countByCity = async (req,res,next) =>{
@@ -200,5 +226,6 @@ module.exports ={
        getAllFeaturedHotels,
        getHotelsByFilter,
        getSingleHotel,
-       getHotelRooms
+       getHotelRooms,
+       getSingleHotelAllRooms
 }

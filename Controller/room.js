@@ -34,24 +34,28 @@ const  createRoom  = async (req,res,next) =>{
        }
 }
 //update rooom
-const updateRoom  = async (req,res,next) =>{
+const updateRoom = async (req, res, next) => {
 
-       const hotelId = req.params.hotelId;
-       const newRoom  = new Room(req.body)
-       try{
-              const savedRoom = await newRoom.save()
+       try {
+
               try {
-                     await Hotels.findByIdAndUpdate(hotelId ,
-                            {$push : {rooms:savedRoom._id}},
-                            {new:true}
+
+                     await Room.findByIdAndUpdate(req.params.id,
+                            { $set: req.body },
+                            { new: true }
                      )
+                     res.status(200).json("Updated")
+
               } catch (error) {
-                      return next(createError(401,'Failed'))    
+                     console.log(error);
+                     // return next(createError(401,'Failed'))    
               }
-              res.status(200).json(savedRoom)
+
        }
-       catch(error){
-              return next(createError(401,'Failed'))
+       catch (error) {
+              console.log(error);
+
+              return next(createError(401, 'Failed'))
        }
 }
 
@@ -65,11 +69,10 @@ const deleteRoom  = async (req,res,next) =>{
                      await Hotels.findByIdAndUpdate(hotelId,{
                             $pull:{rooms:req.params.id}
                      })
+                     return res.status(200).json(' Room has been deleted ');
               } catch (error) {
                      return next(createError(401,'Failed'))    
               }
-              res.status(200).json(savedRoom)
-              res.status(200).json(' Room has been deleted ');
        }
        catch(error){
               return next(createError(401,'Failed'))
